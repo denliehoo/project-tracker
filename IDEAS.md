@@ -1,0 +1,17 @@
+-Should have a sign up and log in feature (add in OAuth)
+-Top is the Nav bar
+-left is a "Projects" bar of which we can keep on adding more Projects. there is a + button at bottom left to add the projects. left should also be able to hide and unhide
+-Inside the "project" user can create columns
+-sorting and filtering
+-Columns can be customised to keep "track" of the history (e.g. if it is a "Next Action" column, user can click on the item to to view the history of the next actions)
+-There should be a priority column which shows the priority ( maybe start with a few static features )
+-find an easy way to edit the items 
+-way to "invite" people to share the project and to unshare. Project will appear in their crm if its shared. User must accept the share
+-logs system to see who changed stuff
+-free vs paid version (do a payments system for both crypto and fiat); has to be recurring payments; fiat use stripe? Crypto use smart contracts; free: create up to 1 project (if people share with you, is not counted as under you), paid: create unlimited projects. Both can share Projects. Note: if people stops paid version and has >1 Projects, free the board and ask them to convert 1 project to free; people accessing shared board under the user who is now frozen should see an error message. 
+-possibly use AWS Lambda for function to call the smart contract on a scheduled basis
+-maybe implement a one time payment feature too for testing (something stupid like pay one time payment of 5$ to customise colours on CRM)
+-project to excel download
+-excel to project import
+-change history upon any change for the project (whether it is add new column , edit a cell, delete etc, all..) user can see the logs for this based on the date
+-find a way to do multiple edits too
