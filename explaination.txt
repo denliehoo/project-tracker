@@ -1,0 +1,19 @@
+server folder structure
+server/
+  |- src/
+      |- models/
+      |- routes/
+      |- controllers/
+      |- middleware/
+  |- app.js
+  |- package.json
+
+app/: This directory contains the core application code.
+models/: Define your MongoDB schema and models in this directory.
+routes/: Define your Express.js routes in this directory.
+controllers/: Implement the logic for your routes in this directory.
+middleware/: Store your custom middleware functions here.
+
+app.js: This file is the entry point of your application. It sets up the Express.js server and connects it to the database.
+
+package.json: The package file that lists the dependencies for your project.
