@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes
 // app.use("/session", routes.session);
+app.use("/users", routes.user);
 app.use("/projects", routes.project);
 // app.use("/messages", routes.message);
 
@@ -25,23 +26,16 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-app.listen(3001, () => {
-  console.log("Server is running on http://localhost:3001");
-  console.log("Hello world");
-  console.log(process.env.PORT);
+// app.listen(3001, () => {
+//   console.log("Server is running on http://localhost:3001");
+//   console.log("Hello world");
+//   console.log(process.env.PORT);
+// });
+
+connectDb().then(async () => {
+  // can seed database here if want
+
+  app.listen(process.env.PORT, () =>
+    console.log(`Example app listening on port ${process.env.PORT}!`)
+  );
 });
-
-// connectDb().then(async () => {
-//     if (eraseDatabaseOnSync) {
-//       // re-initialize DB upon restart server
-//       await Promise.all([
-//         models.User.deleteMany({}),
-//         models.Message.deleteMany({}),
-//       ]);
-//       createUsersWithMessages(); // seed database
-//     }
-
-//     app.listen(process.env.PORT, () =>
-//       console.log(`Example app listening on port ${process.env.PORT}!`)
-//     );
-//   });

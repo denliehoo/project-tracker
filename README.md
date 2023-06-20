@@ -5,7 +5,12 @@ A full stack MERN app to help with project management
 npm start
 
 # server
-npm start
+in terminal, run: 
+- mongod
+    - this will start up mongo db locally
+in a separate terminal:
+- cd server
+- npm start
 
 ## .env in server
 PORT=3001
