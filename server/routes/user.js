@@ -1,17 +1,12 @@
 import { Router } from "express";
+import { createUser, getAllUsers, getUserById } from "../controllers/user";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  return res.send("This is all users");
-});
+router.get("/", getAllUsers);
 
-router.get("/:userId", async (req, res) => {
-  return res.send(`Hello from userId: ${req.params.userId}`);
-});
+router.get("/:id", getUserById);
 
-router.post("/:userId", async (req, res) => {
-  return res.send(`Creating userId: ${req.params.userId}`);
-});
+router.post("/", createUser);
 
 export default router;
