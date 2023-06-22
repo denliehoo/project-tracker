@@ -2,11 +2,15 @@ import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
   {
-    projectName: {
+    name: {
       type: String,
       required: true,
     },
-    projectId: {
+    description: {
+      type: String,
+      required: true,
+    },
+    id: {
       type: String,
       required: true,
     },
