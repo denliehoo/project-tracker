@@ -5,14 +5,17 @@ server/
       |- routes/
       |- controllers/
       |- middleware/
+      |- scritps/
   |- app.js
   |- package.json
 
-app/: This directory contains the core application code.
+src/: This directory contains the core application code.
 models/: Define your MongoDB schema and models in this directory.
 routes/: Define your Express.js routes in this directory.
 controllers/: Implement the logic for your routes in this directory.
 middleware/: Store your custom middleware functions here.
+utility/ : Contains common "helper" functions that might be used throughout the app
+scripts/ : Contains scripts that can be executed standalone (e.g. database reset etc...)
 
 app.js: This file is the entry point of your application. It sets up the Express.js server and connects it to the database.
 

@@ -1,5 +1,6 @@
 # project-tracker
-A full stack MERN app to help with project management
+A full stack MERN app. 
+This is a Software as a Service (SaaS) application that helps people to keep track of their project, including history of the project. 
 
 # client
 npm start
