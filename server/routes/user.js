@@ -14,6 +14,7 @@ router.get("/getUserById", getUserById);
 
 router.post("/", createUser);
 
-router.get("/login", login);
+router.post("/login", login);
+// Note: when doing the frontend, remember that login returns the JWT. Need to save it locally so tht users can access API
 
 export default router;

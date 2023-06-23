@@ -4,6 +4,8 @@ import {
   hashPassword,
   validatePasswordStrength,
 } from "../../utility/passwords";
+const jwt = require('jsonwebtoken');
+
 const { User } = models;
 
 const getAllUsers = async (req, res) => {
@@ -62,7 +64,8 @@ const login = async (req, res) => {
   if (!isCorrectPassword)
     return res.status(400).json({ error: "Incorrect Password" });
 
-  return res.send(user);
+  const token = jwt.sign({ email: email }, process.env.JWT_KEY);  
+  return res.send({token: token});
 };
 
 // helper functions

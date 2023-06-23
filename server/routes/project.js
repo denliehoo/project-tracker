@@ -8,11 +8,12 @@ import {
   updateProject,
   deleteProject,
 } from "../controllers/project";
+import { authenticateJWT } from "../middleware/authenticateJWT";
 
 const router = Router();
 
 router.get("/", getAllProjects);
-router.get("/:id", getProjectById);
+router.get("/:id",authenticateJWT, getProjectById);
 router.post("/", createProject);
 router.put("/:id", updateProject);
 router.delete("/:id", deleteProject);

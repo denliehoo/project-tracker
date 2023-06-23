@@ -27,6 +27,11 @@ Go to Homebrew copy the "Install Brew" link from there, paste and run. To check 
 Then open another tab on terminal(command + t), and type
 - mongosh
 
+Note: for testing with postman, 
+- Call the login api first to get the token
+- Then need put in the Headers: Key: Authorization    , value: JWT TOKEN which was returned from the login
+
 ## .env in server
 PORT=3001
 DATABASE_URL=mongodb://127.0.0.1:27017/project-tracker
+JWT_KEY=TEMPKEY
