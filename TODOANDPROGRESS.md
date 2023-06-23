@@ -1,5 +1,4 @@
 # To do
-- [Server] Link project to users and ensure only the users can edit the project
 - [Server] Work on Task entity and link it to the project (i.e. the columns and date for the "table")
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - TBC... sometime in the future...
@@ -16,3 +15,4 @@
 - 22/06/23: [Server] Basic create and read for User entity
 - 23/06/23: [Server] Extend functionality for User entity (e.g. password validation, sign up (create) , login (extension of get), etc...)
 - 23/06/23: [Server] Added authorization for certain APIs. When user logs in, there will be a JWT token returned which must be used to for authorization for some APIs
+- 23/06/23: [Server] Link project to users and ensure only the users can edit the project; Project should now have a owner field. Upon creating, link the email to the Project
