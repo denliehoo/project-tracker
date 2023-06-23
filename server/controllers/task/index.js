@@ -23,7 +23,7 @@ const getAllTasksForProject = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const { item, nextAction, priority, project } = req.body
+    let { item, nextAction, priority, project } = req.body
     const task = new Task({ item, nextAction, priority, project })
     await task.save()
     res.status(201).json(task)
@@ -42,6 +42,10 @@ const updateTask = async (req, res) => {
   if (!item || !nextAction || !priority)
     return res.status(404).json({ error: 'Cannot be empty' })
 
+  task.nextActionHistory.push({
+    time: new Date(Date.now()),
+    data: task.nextAction,
+  })
   task.item = item
   task.nextAction = nextAction
   task.priority = priority

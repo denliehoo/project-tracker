@@ -33,6 +33,26 @@ app.get('/', (req, res) => {
 //   console.log("Hello world");
 //   console.log(process.env.PORT);
 // });
+
+connectDb().then(async () => {
+  // change to true/false if want to reset and seed db
+  if (false) {
+    console.log('Re-seeding database!')
+
+    // clear database
+    await Promise.all([
+      models.Project.deleteMany({}),
+      models.User.deleteMany({}),
+      models.Task.deleteMany({}),
+    ])
+    await seedDataBase()
+  }
+
+  app.listen(process.env.PORT, () =>
+    console.log(`Example app listening on port ${process.env.PORT}!`),
+  )
+})
+
 const seedDataBase = async () => {
   const alicePassword = await hashPassword('AlicePassword1234!')
   const alice = new models.User({
@@ -58,26 +78,28 @@ const seedDataBase = async () => {
     id: '123',
     owner: 'bob@test.com',
   })
+  const aliceTask = new models.Task({
+    item: 'Alice Item',
+    nextAction: 'Do 3',
+    nextActionHistory: [
+      { time: new Date(Date.now() - 24 * 60 * 60 * 1000), data: 'Do 1' },
+      { time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), data: 'Do 2' },
+    ],
+    priority: 100,
+    project: aliceProject._id,
+  })
+  const bobTask = new models.Task({
+    item: 'Bob Item',
+    nextAction: 'do some stuff bob',
+    nextActionHistory: [],
+    priority: 100,
+    project: bobProject._id,
+  })
 
   await alice.save()
   await bob.save()
   await aliceProject.save()
   await bobProject.save()
+  await aliceTask.save()
+  await bobTask.save()
 }
-connectDb().then(async () => {
-  // change to true/false if want to reset and seed db
-  if (false) {
-    console.log('Re-seeding database!')
-    
-    // clear database
-    await Promise.all([
-      models.Project.deleteMany({}),
-      models.User.deleteMany({}),
-    ])
-    await seedDataBase()
-  }
-
-  app.listen(process.env.PORT, () =>
-    console.log(`Example app listening on port ${process.env.PORT}!`),
-  )
-})
