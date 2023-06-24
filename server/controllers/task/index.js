@@ -3,6 +3,8 @@ const { Task, Project, User } = models
 
 // this is for admin to get every single task
 const getAllTasks = async (req, res) => {
+  if (req.headers.admin !== 'fosure')
+    return res.status(401).json({ error: 'Only admin can use this' })
   try {
     const tasks = await Task.find().populate('project')
     res.json(tasks)
@@ -42,12 +44,16 @@ const updateTask = async (req, res) => {
   if (!item || !nextAction || !priority)
     return res.status(404).json({ error: 'Cannot be empty' })
 
-  task.nextActionHistory.push({
-    time: new Date(Date.now()),
-    data: task.nextAction,
-  })
+  console.log(task.nextAction)
+  console.log(nextAction)
+  if (task.nextAction !== nextAction) {
+    task.nextActionHistory.push({
+      time: new Date(Date.now()),
+      data: task.nextAction,
+    })
+    task.nextAction = nextAction
+  }
   task.item = item
-  task.nextAction = nextAction
   task.priority = priority
 
   task = await task.save()

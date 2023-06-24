@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 // app.use("/session", routes.session);
 app.use('/users', routes.user)
 app.use('/projects', authenticateJWT, routes.project)
-app.use('/tasks', routes.task)
+app.use('/tasks', authenticateJWT, routes.task)
 // app.use("/messages", routes.message);
 
 // Define a route

@@ -1,9 +1,10 @@
 # To do
 - [Server] Add authorization for tasks and ensure only owner of the project can perform actions on the Task for the given Project
+- [Server] Enable "sharing" of projects. Either read only or edit permissions. Hence, in Project Entity, add 2 more properties which are basically arrays of email: readOnly & editors. Ensure readOnly can view only and cannot edit. editors can read and edit
+- [Server] Users can only own up to 2 boards if they are in free tier. Shared is not counted. 
+- [Server] If premium user with >2 boards become free user, ensure board is locked and people can read only. Give ability to owner to choose which board to "lock" and which to be able to use if they dont want to go back to premium
 - TBC... sometime in the future...
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
-- Enable "sharing" of projects
-- Users can only own up to 3 boards if they are in free tier. Shared is not counted. 
 - Stripe for payments of premium tier
 - Set up crypto payments for premium tier
 - Add OAuth (Gmail only first) as authentication
