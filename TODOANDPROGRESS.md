@@ -1,9 +1,11 @@
 # To do
-- [Server] Enable "sharing" of projects. Either read only or edit permissions. Hence, in Project Entity, add 2 more properties which are basically arrays of email: readOnly & editors. Ensure readOnly can view only and cannot edit. editors can read and edit
+- [Server] editors of the board can edit tasks for the Project
+- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app
 - [Server] Users can only own up to 2 boards if they are in free tier. Shared is not counted. 
 - [Server] If premium user with >2 boards become free user, ensure board is locked and people can read only. Give ability to owner to choose which board to "lock" and which to be able to use if they dont want to go back to premium
 - TBC... sometime in the future...
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
+- [Server] Enable choosing of either read only or view only for sharing
 - Stripe for payments of premium tier
 - Set up crypto payments for premium tier
 - Add OAuth (Gmail only first) as authentication
@@ -19,3 +21,6 @@
 - 23/06/23: [Server] CRUD Functionalities of Task entity and link it to the project (i.e. the columns and date for the "table")
 - 24/06/23: [Server] Upon editing certain task (just nextAction for now) there should be a history of it.  
 - 24/06/23: [Server] Add authorization for tasks and ensure only owner of the project can perform actions on the Task for the given Project
+- 24/06/23: [Server] Enable "sharing" of projects. Hence, in Project Entity, add one more property: editors which is an array of the emails.
+    - Only owners can share Project with people
+    - editors can view the Project but cannot edit the Project (i.e. cant change project description/share,etc...)

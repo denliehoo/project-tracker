@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const projectSchema = new mongoose.Schema(
   {
@@ -14,13 +14,17 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    owner:{
+    owner: {
       type: String,
       required: true,
-    }
+    },
+    editors: {
+      type: [String],
+      required: false,
+    },
   },
-  { timestamps: true }
-);
+  { timestamps: true },
+)
 
-const Project = mongoose.model("Project", projectSchema);
-export default Project;
+const Project = mongoose.model('Project', projectSchema)
+export default Project
