@@ -7,25 +7,32 @@ const getAllTasks = async (req, res) => {
     return res.status(401).json({ error: 'Only admin can use this' })
   try {
     const tasks = await Task.find().populate('project')
-    res.json(tasks)
+    return res.json(tasks)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch tasks' })
+    return res.status(500).json({ error: 'Failed to fetch tasks' })
   }
 }
 
 const getAllTasksForProject = async (req, res) => {
+  const id = req.params.id
+  const isOwner = await checkIfOwner(req.email, id)
+  if (!isOwner) return res.status(403).json({ error: 'You are not authorized' })
+
   try {
-    const id = req.params.id
     const tasks = await Task.find({ project: id }).populate('project')
-    res.json(tasks)
+    return res.json(tasks)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch tasks' })
+    return res.status(500).json({ error: 'Failed to fetch tasks' })
   }
 }
 
 const createTask = async (req, res) => {
   try {
     let { item, nextAction, priority, project } = req.body
+    const isOwner = await checkIfOwner(req.email, project)
+    if (!isOwner)
+      return res.status(403).json({ error: 'You are not authorized' })
+
     const task = new Task({ item, nextAction, priority, project })
     await task.save()
     res.status(201).json(task)
@@ -40,12 +47,13 @@ const updateTask = async (req, res) => {
   let task = await findTaskById(id)
   if (!task) return res.status(404).json({ error: 'Task not found' })
 
+  const isOwner = await checkIfOwner(req.email, task.project)
+  if (!isOwner) return res.status(403).json({ error: 'You are not authorized' })
+
   const { item, nextAction, priority } = req.body
   if (!item || !nextAction || !priority)
     return res.status(404).json({ error: 'Cannot be empty' })
 
-  console.log(task.nextAction)
-  console.log(nextAction)
   if (task.nextAction !== nextAction) {
     task.nextActionHistory.push({
       time: new Date(Date.now()),
@@ -65,6 +73,9 @@ const deleteTask = async (req, res) => {
   let task = await findTaskById(id)
   if (!task) return res.status(404).json({ error: 'Task not found' })
 
+  const isOwner = await checkIfOwner(req.email, task.project)
+  if (!isOwner) return res.status(403).json({ error: 'You are not authorized' })
+
   task = await Task.deleteOne({ _id: id })
   res.send(task)
 }
@@ -77,6 +88,15 @@ const findTaskById = async (id) => {
   } catch {
     return null
   }
+}
+const checkIfOwner = async (email, projectId) => {
+  let project
+  try {
+    project = await Project.findById(projectId)
+  } catch {
+    return false
+  }
+  return email === project?.owner ? true : false
 }
 
 export {
