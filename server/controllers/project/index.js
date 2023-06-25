@@ -1,5 +1,5 @@
 import models from '../../models'
-const { Project, User } = models
+const { Project, User, Task } = models
 
 const getAllProjects = async (req, res) => {
   const email = req.email
@@ -70,6 +70,8 @@ const deleteProject = async (req, res) => {
   if (!project) return res.status(404).json({ error: 'Project not found' })
   if (project.owner !== req.email)
     return res.status(401).json({ error: 'You are forbidden to delete this' })
+
+  await Task.deleteMany({ project: id }) // removes all tassks associated with the Project
   project = await Project.deleteOne({ _id: id })
   res.send(project)
 }
