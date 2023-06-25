@@ -15,8 +15,9 @@ const getAllTasks = async (req, res) => {
 
 const getAllTasksForProject = async (req, res) => {
   const id = req.params.id
-  const isOwner = await checkIfOwner(req.email, id)
-  if (!isOwner) return res.status(403).json({ error: 'You are not authorized' })
+  const canAccess = await checkIfOwnerOrEditor(req.email, id)
+  if (!canAccess)
+    return res.status(403).json({ error: 'You are not authorized' })
 
   try {
     const tasks = await Task.find({ project: id }).populate('project')
@@ -29,8 +30,8 @@ const getAllTasksForProject = async (req, res) => {
 const createTask = async (req, res) => {
   try {
     let { item, nextAction, priority, project } = req.body
-    const isOwner = await checkIfOwner(req.email, project)
-    if (!isOwner)
+    const canAccess = await checkIfOwnerOrEditor(req.email, project)
+    if (!canAccess)
       return res.status(403).json({ error: 'You are not authorized' })
 
     const task = new Task({ item, nextAction, priority, project })
@@ -47,8 +48,9 @@ const updateTask = async (req, res) => {
   let task = await findTaskById(id)
   if (!task) return res.status(404).json({ error: 'Task not found' })
 
-  const isOwner = await checkIfOwner(req.email, task.project)
-  if (!isOwner) return res.status(403).json({ error: 'You are not authorized' })
+  const canAccess = await checkIfOwnerOrEditor(req.email, task.project)
+  if (!canAccess)
+    return res.status(403).json({ error: 'You are not authorized' })
 
   const { item, nextAction, priority } = req.body
   if (!item || !nextAction || !priority)
@@ -73,8 +75,9 @@ const deleteTask = async (req, res) => {
   let task = await findTaskById(id)
   if (!task) return res.status(404).json({ error: 'Task not found' })
 
-  const isOwner = await checkIfOwner(req.email, task.project)
-  if (!isOwner) return res.status(403).json({ error: 'You are not authorized' })
+  const canAccess = await checkIfOwnerOrEditor(req.email, task.project)
+  if (!canAccess)
+    return res.status(403).json({ error: 'You are not authorized' })
 
   task = await Task.deleteOne({ _id: id })
   res.send(task)
@@ -89,14 +92,16 @@ const findTaskById = async (id) => {
     return null
   }
 }
-const checkIfOwner = async (email, projectId) => {
+const checkIfOwnerOrEditor = async (email, projectId) => {
   let project
   try {
     project = await Project.findById(projectId)
   } catch {
     return false
   }
-  return email === project?.owner ? true : false
+  return email === project?.owner || project?.editors?.includes(email)
+    ? true
+    : false
 }
 
 export {

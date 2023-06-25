@@ -15,7 +15,7 @@ router.get('/', getAllProjects)
 router.get('/:id', getProjectById)
 router.post('/', createProject)
 router.put('/:id/sharing', editSharing) // place above update project else have clash
-router.delete('/:id/sharing', deleteSharing) // place above update project else have clash
+router.delete('/:id/sharing', deleteSharing) // place above delete project else have clash
 router.put('/:id', updateProject)
 router.delete('/:id', deleteProject)
 

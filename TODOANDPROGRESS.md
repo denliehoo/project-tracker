@@ -1,6 +1,6 @@
 # To do
-- [Server] editors of the board can edit tasks for the Project
 - [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app
+- [Server] Upon delete project, need to ensure that editors are removed and all tasks under it are removed too
 - [Server] Users can only own up to 2 boards if they are in free tier. Shared is not counted. 
 - [Server] If premium user with >2 boards become free user, ensure board is locked and people can read only. Give ability to owner to choose which board to "lock" and which to be able to use if they dont want to go back to premium
 - TBC... sometime in the future...
@@ -25,3 +25,4 @@
     - Only owners can share Project with people
     - editors can view the Project but cannot edit the Project (i.e. cant change project description/share,etc...)
 - 25/06/23: [Server] Enable remove sharing of projects. Improved error handling for sharing to ensure input of email is an array of strings. Previously, if user sends as text, app will crash because it tries to loop on undefined. 
+- 25/06/23: [Server] editors of the board can edit tasks for the Project
