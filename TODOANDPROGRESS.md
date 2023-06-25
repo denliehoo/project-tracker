@@ -24,3 +24,4 @@
 - 24/06/23: [Server] Enable "sharing" of projects. Hence, in Project Entity, add one more property: editors which is an array of the emails.
     - Only owners can share Project with people
     - editors can view the Project but cannot edit the Project (i.e. cant change project description/share,etc...)
+- 25/06/23: [Server] Enable remove sharing of projects. Improved error handling for sharing to ensure input of email is an array of strings. Previously, if user sends as text, app will crash because it tries to loop on undefined. 

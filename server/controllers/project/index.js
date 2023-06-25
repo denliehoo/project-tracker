@@ -89,6 +89,10 @@ const editSharing = async (req, res) => {
     updatedSharing: [],
   }
   const toShare = req.body.email
+  if (!Array.isArray(toShare))
+    return res
+      .status(400)
+      .json({ error: 'Bad request. Email should be an array of strings' })
   const current = project.editors
 
   for (let u of toShare) {
@@ -115,6 +119,45 @@ const editSharing = async (req, res) => {
   res.send(result)
 }
 
+const deleteSharing = async (req, res) => {
+  const id = req.params.id
+  let project = await findProjectById(id)
+  if (!project) return res.status(404).json({ error: 'Project not found' })
+  if (project.owner !== req.email)
+    return res.status(401).json({ error: 'You are forbidden to edit this' })
+
+  let result = {
+    isRemoveSelf: false, // if user tries to share with themself
+    notSharing: [],
+    removed: [],
+    updatedSharing: [],
+  }
+  const toRemove = req.body.email
+  if (!Array.isArray(toRemove))
+    return res
+      .status(400)
+      .json({ error: 'Bad request. Email should be an array of strings' })
+  let current = project.editors
+
+  for (let u of toRemove) {
+    if (u === req.email) {
+      result.isRemoveSelf = true
+      continue
+    }
+    if (current.includes(u)) {
+      current = current.filter((user) => user !== u)
+      result.removed.push(u)
+      continue
+    }
+    // if here means project is already not shared with user
+    result.notSharing.push(u)
+  }
+  project.editors = current
+  await project.save()
+  result.updatedSharing = current
+  res.send(result)
+}
+
 // helper functions
 const findProjectById = async (id) => {
   try {
@@ -132,4 +175,5 @@ export {
   updateProject,
   deleteProject,
   editSharing,
+  deleteSharing,
 }
