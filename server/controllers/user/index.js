@@ -1,82 +1,114 @@
-import models from "../../models";
+import models from '../../models'
 import {
   comparePasswords,
   hashPassword,
   validatePasswordStrength,
-} from "../../utility/passwords";
-const jwt = require('jsonwebtoken');
+} from '../../utility/passwords'
+const jwt = require('jsonwebtoken')
 
-const { User } = models;
+const { User } = models
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find();
-  return res.send(users);
-};
+  const users = await User.find()
+  return res.send(users)
+}
 
 const getUserById = async (req, res) => {
-  const user = await findUserById(req.body.id);
-  if (!user) return res.status(404).json({ error: "User not found" });
-  return res.send(user);
-};
+  const user = await findUserById(req.body.id)
+  if (!user) return res.status(404).json({ error: 'User not found' })
+  return res.send(user)
+}
 
 // aka register user
 const createUser = async (req, res) => {
-  let user;
-  let { name, email, password } = req.body;
+  let user
+  let { name, email, password } = req.body
 
   if (!name || !email || !password)
-    return res.status(400).json({ error: "Cannot be empty" });
+    return res.status(400).json({ error: 'Cannot be empty' })
 
-  const isValidPassword = validatePasswordStrength(password);
+  const isValidPassword = validatePasswordStrength(password)
   if (!isValidPassword)
     return res.status(400).json({
       error:
-        "Enter a stronger password. Password must be at least 8 alphanumeric characters with one capitalized and non-capitalized and one special character",
-    });
+        'Enter a stronger password. Password must be at least 8 alphanumeric characters with one capitalized and non-capitalized and one special character',
+    })
 
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = await hashPassword(password)
 
-  let emailExistsInDb = await User.find({ email: email });
-  emailExistsInDb = emailExistsInDb.length > 0 ? true : false;
+  let emailExistsInDb = await User.find({ email: email })
+  emailExistsInDb = emailExistsInDb.length > 0 ? true : false
   if (emailExistsInDb)
-    return res.status(400).json({ error: "Email already exists" });
+    return res.status(400).json({ error: 'Email already exists' })
 
   try {
     user = await User.create({
       name: name,
       email: email,
       password: hashedPassword,
-    });
+    })
   } catch (error) {
-    return res.status(400).json({ error: error.toString() });
+    return res.status(400).json({ error: error.toString() })
   }
 
-  return res.send(user);
-};
+  return res.send(user)
+}
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
-  let user = await User.find({ email: email });
+  const { email, password } = req.body
+  let user = await User.find({ email: email })
   if (user.length === 0)
-    return res.status(400).json({ error: "User not found" });
+    return res.status(400).json({ error: 'User not found' })
 
-  const isCorrectPassword = await comparePasswords(password, user[0].password); // true or false
+  const isCorrectPassword = await comparePasswords(password, user[0].password) // true or false
   if (!isCorrectPassword)
-    return res.status(400).json({ error: "Incorrect Password" });
+    return res.status(400).json({ error: 'Incorrect Password' })
 
-  const token = jwt.sign({ email: email }, process.env.JWT_KEY);  
-  return res.send({token: token});
-};
+  const token = jwt.sign({ email: email }, process.env.JWT_KEY)
+  return res.send({ token: token })
+}
+
+const changePaidStatus = async (req, res) => {
+  const { email, isPremium } = req.body
+  console.log(email, isPremium)
+  let user = await findUserByEmail(email)
+  if (!isPremium && user.isPremium) {
+    // means changing user from premium to not premium
+    // ********NOTE: NEED TO COME BACK HERE AGAIN TO DO THIS********
+    // if changing to isPremium false and >1 board, need lock the boards
+    user.isPremium = false
+    await user.save()
+    return res.send(user)
+  }
+  if (isPremium && !user.isPremium) {
+    // means changing user from not premium to premium
+    user.isPremium = true
+    user = await user.save()
+    return res.send(user)
+  }
+
+  return res.status(400).json({
+    error: `Unable to change user premium status from ${isPremium} to ${isPremium}`,
+  })
+}
 
 // helper functions
 const findUserById = async (id) => {
   try {
-    const user = await User.findById(id);
-    console.log(user);
-    return user;
+    const user = await User.findById(id)
+    return user
   } catch {
-    return null;
+    return null
   }
-};
+}
 
-export { createUser, getAllUsers, getUserById, login };
+const findUserByEmail = async (email) => {
+  try {
+    const user = await User.find({ email: email })
+    return user[0]
+  } catch {
+    return null
+  }
+}
+
+export { createUser, getAllUsers, getUserById, login, changePaidStatus }

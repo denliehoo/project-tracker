@@ -1,7 +1,10 @@
 # To do
-- [Server] Users can only own up to 2 boards if they are in free tier. Shared is not counted. 
-- [Server] If premium user with >2 boards become free user, ensure board is locked and people can read only. Give ability to owner to choose which board to "lock" and which to be able to use if they dont want to go back to premium
+- [Server] If premium user with >1 boards become free user, ensure board is locked and people can read only. Give ability to owner to choose which board to "lock" and which to be able to use if they dont want to go back to premium
+    - Note: check user controller for the changing paid status to lock the board
+    - Give user option to change which board to unlocked. Either do in projects or user controller
+    - Ensure if project is locked, there is validation on tasks that makes the user unable to access resoure
 - TBC... sometime in the future...
+- [Server] Add auth for User routes for admin only
 - [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Server] Enable choosing of either read only or view only for sharing
@@ -27,3 +30,4 @@
 - 25/06/23: [Server] Enable remove sharing of projects. Improved error handling for sharing to ensure input of email is an array of strings. Previously, if user sends as text, app will crash because it tries to loop on undefined. 
 - 25/06/23: [Server] editors of the board can edit tasks for the Project
 - 25/06/23: [Server] Upon delete project, need to ensure that editors are removed and all tasks under it are removed too
+- 25/06/23: [Server] Users can only create up to 1 boards if they are in free tier. Shared is not counted. 

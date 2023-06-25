@@ -32,7 +32,11 @@ const getProjectById = async (req, res) => {
 }
 
 const createProject = async (req, res) => {
-  let project
+  let project, user
+  user = await findUserByEmail(req.email)
+  if (!user.isPremium && user.ownProjects.length > 0)
+    return res.status(401).json({ error: 'Free users can only own 1 board' })
+
   try {
     project = await Project.create({
       name: req.body.name,
@@ -116,8 +120,6 @@ const editSharing = async (req, res) => {
   }
   await project.save()
   result.updatedSharing = current
-  // console.log(toShare)
-  // console.log(project.editors)
   res.send(result)
 }
 
@@ -165,6 +167,15 @@ const findProjectById = async (id) => {
   try {
     const project = await Project.findById(id)
     return project
+  } catch {
+    return null
+  }
+}
+
+const findUserByEmail = async (email) => {
+  try {
+    const user = await User.find({ email: email })
+    return user[0]
   } catch {
     return null
   }

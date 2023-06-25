@@ -54,18 +54,6 @@ connectDb().then(async () => {
 })
 
 const seedDataBase = async () => {
-  const alicePassword = await hashPassword('AlicePassword1234!')
-  const alice = new models.User({
-    name: 'Alice Sis',
-    email: 'alice@test.com',
-    password: alicePassword,
-  })
-  const bobPassword = await hashPassword('BobPassword1234!')
-  const bob = new models.User({
-    name: 'Bob Bro',
-    email: 'bob@test.com',
-    password: bobPassword,
-  })
   const aliceProject = new models.Project({
     name: 'Alice Test Project!',
     description: 'this is alice test project',
@@ -78,6 +66,24 @@ const seedDataBase = async () => {
     id: '123',
     owner: 'bob@test.com',
   })
+
+  // actual flow is creater user> create project. But for here is ok since just seeding database
+  // and since entities are linked through email
+  const alicePassword = await hashPassword('AlicePassword1234!')
+  const alice = new models.User({
+    name: 'Alice Sis',
+    email: 'alice@test.com',
+    password: alicePassword,
+    ownProjects: [{ project: aliceProject._id, locked: false }],
+  })
+  const bobPassword = await hashPassword('BobPassword1234!')
+  const bob = new models.User({
+    name: 'Bob Bro',
+    email: 'bob@test.com',
+    password: bobPassword,
+    ownProjects: [{ project: bobProject._id, locked: false }],
+  })
+
   const aliceTask = new models.Task({
     item: 'Alice Item',
     nextAction: 'Do 3',
