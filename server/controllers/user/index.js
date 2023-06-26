@@ -70,19 +70,26 @@ const login = async (req, res) => {
 
 const changePaidStatus = async (req, res) => {
   const { email, isPremium } = req.body
-  console.log(email, isPremium)
   let user = await findUserByEmail(email)
   if (!isPremium && user.isPremium) {
     // means changing user from premium to not premium
-    // ********NOTE: NEED TO COME BACK HERE AGAIN TO DO THIS********
-    // if changing to isPremium false and >1 board, need lock the boards
     user.isPremium = false
+    console.log(user.ownProjects.length)
+    if (user.ownProjects.length > 1) {
+      // lock their projects only if they have >1 project
+      for (let p of user.ownProjects) {
+        p.locked = true
+      }
+    }
     await user.save()
     return res.send(user)
   }
   if (isPremium && !user.isPremium) {
     // means changing user from not premium to premium
     user.isPremium = true
+    for (let p of user.ownProjects) {
+      p.locked = false
+    }
     user = await user.save()
     return res.send(user)
   }

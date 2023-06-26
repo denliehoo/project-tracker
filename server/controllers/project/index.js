@@ -44,6 +44,8 @@ const createProject = async (req, res) => {
       id: req.body.id,
       owner: req.email,
     })
+    await user.ownProjects.push({ project: project._id, locked: false })
+    await user.save()
   } catch (error) {
     return res.status(400).json({ error: error.toString() })
   }
@@ -75,9 +77,15 @@ const deleteProject = async (req, res) => {
   if (project.owner !== req.email)
     return res.status(401).json({ error: 'You are forbidden to delete this' })
 
+  let user = await findUserByEmail(req.email)
+  // != instead of !== cause type isnt strictly the same; input it text and type
+  // in ownProjects is ObjectId (mongodb)
+  const tempOwnProjects = await user.ownProjects.filter((p) => p.project != id)
+  user.ownProjects = tempOwnProjects
+  await user.save()
   await Task.deleteMany({ project: id }) // removes all tassks associated with the Project
   project = await Project.deleteOne({ _id: id })
-  res.send(project)
+  return res.send(project)
 }
 
 const editSharing = async (req, res) => {
@@ -162,6 +170,37 @@ const deleteSharing = async (req, res) => {
   res.send(result)
 }
 
+const changeLockedProject = async (req, res) => {
+  const email = req.email
+  const id = req.params.id
+  let user = await findUserByEmail(email)
+  if (user.isPremium)
+    return res
+      .status(401)
+      .json({ error: 'Only free users have to unlock projects' })
+  let userIsOwner = false
+  for (let p of user.ownProjects) {
+    // not strictly equal
+    if (p.project == id) {
+      userIsOwner = true
+      p.locked = false
+    } else {
+      p.locked = true
+    }
+  }
+  if (!userIsOwner) return res.send('you are not the owner!!!!')
+  await user.save() // only save to db if user is the owner
+  return res.send(user)
+
+  // change the locked project to false for the id that was provided
+  // the other projects will be locked = true
+  // meaning if lets say a was unlocked and b locked, and b id was passed
+  // then unlock b and lock a. let user know in frontend that it will be locked
+  // if both a and b locked, then just unlock b if b is passed
+  // this function is only for if user is not premium user
+  // and has > 1 Project
+}
+
 // helper functions
 const findProjectById = async (id) => {
   try {
@@ -189,4 +228,5 @@ export {
   deleteProject,
   editSharing,
   deleteSharing,
+  changeLockedProject,
 }

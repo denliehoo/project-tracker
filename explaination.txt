@@ -20,3 +20,13 @@ scripts/ : Contains scripts that can be executed standalone (e.g. database reset
 app.js: This file is the entry point of your application. It sets up the Express.js server and connects it to the database.
 
 package.json: The package file that lists the dependencies for your project.
+
+
+
+------
+summary:
+-Developed and deployed a Software as a Service (SaaS) project tracker application built using the MongoDB, Express,  React, Node.jS (MERN Stack)
+-Utilised Postman to test APIs; Increase testing efficiency through scripting in Postman
+-Some point about complicated database stuff and designs
+-Enabled cryptocurrency and fiat payments through Stripe API and Smart Contract to enable users to subscribe to premium tiers
+-Split resources up through authorization and designed permissions to ensure certain resources ....
