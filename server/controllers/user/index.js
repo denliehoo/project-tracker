@@ -6,9 +6,12 @@ import {
 } from '../../utility/passwords'
 const jwt = require('jsonwebtoken')
 
+const passport = require('passport')
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const { User } = models
 
 const getAllUsers = async (req, res) => {
+  console.log(process.env.GOOGLE_OAUTH_CLIENT_ID)
   const users = await User.find()
   return res.send(users)
 }
@@ -98,7 +101,58 @@ const changePaidStatus = async (req, res) => {
     error: `Unable to change user premium status from ${isPremium} to ${isPremium}`,
   })
 }
+// Google OAUTH
+// need find a way to delay this since the env is undefined if we execute immediately
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: 'REPLACEME',
+      // clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
+      // clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+      clientSecret: 'REPLACEME',
+      callbackURL: '/users/auth/google/callback',
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      // Add your custom logic to handle the user's profile data
+      console.log('User Profile:', profile)
+      console.log(profile.emails[0].value)
+      // const user = await findUserByEmail(profile.emails[0].value)
+      // console.log(user)
+      // Here, you can create or find the user in your database and perform login/registration
+      // For simplicity, we'll just pass the profile data to the callback
+      return done(null, profile)
+    },
+  ),
+)
 
+// Handle Google OAuth authentication
+// http://localhost:3001/users/auth/google
+// ^client should click the google log in on frontend and open a new tab to this page to do the login
+const googleAuth = passport.authenticate('google', {
+  scope: ['profile', 'email'],
+})
+
+// Handle Google OAuth callback and redirection
+const googleAuthCallback = async (req, res, next) => {
+  passport.authenticate(
+    'google',
+    { failureRedirect: '/login' },
+    (err, user) => {
+      console.log('****this is user*****')
+      console.log(user)
+      if (err) {
+        // Handle any error that occurred during authentication
+        console.log('there is an error')
+        console.log(err)
+        return next(err)
+      }
+
+      console.log('redirect time')
+      // Successful authentication, redirect to the desired page
+      res.redirect('/dashboard')
+    },
+  )(req, res, next)
+}
 // helper functions
 const findUserById = async (id) => {
   try {
@@ -118,4 +172,12 @@ const findUserByEmail = async (email) => {
   }
 }
 
-export { createUser, getAllUsers, getUserById, login, changePaidStatus }
+export {
+  createUser,
+  getAllUsers,
+  getUserById,
+  login,
+  changePaidStatus,
+  googleAuth,
+  googleAuthCallback,
+}

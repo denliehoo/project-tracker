@@ -1,13 +1,16 @@
 # To do
-- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
+- [Client] Get basic frontend skeleton out
 - TBC... sometime in the future...
+- [Server] Add OAuth (Gmail only first) as authentication
+- [Server + Frontend] Stripe for recurring payments of premium tier [https://stripe.com/docs/billing/quickstart]
+- [Server + Frontend] Set up crypto payments for recurring payments premium tier
+    - Create a smart contract to handle to recurring payments. The idea is: user sets allowance for ERC20 token > a server calls the smart contract every 1 month > the function called reduces the ERC20 balance directly from their wallet (try this out first) > upon success, server calls API to backend to change status to paid, if fail, change status to free
+- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
 - [Server] Add auth for User routes for admin only
 - [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Server] Enable choosing of either read only or view only for sharing
-- Stripe for payments of premium tier
-- Set up crypto payments for premium tier
-- Add OAuth (Gmail only first) as authentication
+
 
 # Done
 - 16/06/23: Initialization of client and server app
@@ -33,3 +36,4 @@
     - Note: check user controller for the changing paid status to lock the board [ok]
     - Give user option to change which board to unlocked. Do in project controller and make new route [ok]
     - Ensure if project is locked, there is validation on tasks that makes the user unable to access resource [ok]
+-26/06/23: [Server] Drafted backend for stripe and oauth google. Need to revisit later

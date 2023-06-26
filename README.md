@@ -35,3 +35,7 @@ Note: for testing with postman,
 PORT=3001
 DATABASE_URL=mongodb://127.0.0.1:27017/project-tracker
 JWT_KEY=TEMPKEY
+GOOGLE_OAUTH_CLIENT_ID=XXXX
+GOOGLE_OAUTH_CLIENT_SECRET=XXX
+
+- can get Google creds from: https://console.developers.google.com/ after creating a project
