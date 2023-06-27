@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
   let user
   let { name, email, password } = req.body
 
-  if (!name || !email || !password)
+  if (!email || !password)
     return res.status(400).json({ error: 'Cannot be empty' })
 
   const isValidPassword = validatePasswordStrength(password)

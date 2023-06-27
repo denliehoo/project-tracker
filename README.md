@@ -38,4 +38,7 @@ JWT_KEY=TEMPKEY
 GOOGLE_OAUTH_CLIENT_ID=XXXX
 GOOGLE_OAUTH_CLIENT_SECRET=XXX
 
+## .env in client
+REACT_APP_API_URL=http://localhost:3001
+
 - can get Google creds from: https://console.developers.google.com/ after creating a project

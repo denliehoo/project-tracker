@@ -6,12 +6,13 @@ import routes from './routes'
 import { authenticateJWT } from './middleware/authenticateJWT'
 import { hashPassword } from './utility/passwords'
 const express = require('express')
+const cors = require('cors')
 
 // Create an Express application
 const app = express()
 
 // middlewares
-// app.use(cors()); // use the cors middleware as an application-wide middleware by using express' use method
+app.use(cors()) // use the cors middleware as an application-wide middleware by using express' use method
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

@@ -1,5 +1,5 @@
 # To do
-- [Client] Get basic frontend skeleton out
+- [Client] Get basic frontend skeleton out: Project, Next Action, ...
 - TBC... sometime in the future...
 - [Server] Add OAuth (Gmail only first) as authentication
 - [Server + Frontend] Stripe for recurring payments of premium tier [https://stripe.com/docs/billing/quickstart]
@@ -36,4 +36,5 @@
     - Note: check user controller for the changing paid status to lock the board [ok]
     - Give user option to change which board to unlocked. Do in project controller and make new route [ok]
     - Ensure if project is locked, there is validation on tasks that makes the user unable to access resource [ok]
--26/06/23: [Server] Drafted backend for stripe and oauth google. Need to revisit later
+- 26/06/23: [Server] Drafted backend for stripe and oauth google. Need to revisit later
+- 27/06/23: [Client] Get basic frontend skeleton out: General App Structure, Login, Layout (Navbar and SideBar), Project (halfway)
