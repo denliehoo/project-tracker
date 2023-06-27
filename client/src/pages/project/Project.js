@@ -16,6 +16,9 @@ const Project = (props) => {
   const [addTaskDetails, setAddTaskDetails] = useState({})
   const [isConfirmDelete, setIsConfirmDelete] = useState(false)
 
+  const [nextActionHistory, setNextActionHistory] = useState([])
+  const [nextActionHistoryItem, setNextActionHistoryItem] = useState('')
+
   const token = localStorage.getItem('JWT')
   const handleCheckboxChange = (rowId) => {
     setError('')
@@ -30,6 +33,8 @@ const Project = (props) => {
     setSelectedRowDetails({})
     setAddTaskDetails({})
     setSelectedRow(null)
+    setNextActionHistory([])
+    setNextActionHistoryItem('')
   }
   const getTasks = async () => {
     try {
@@ -242,6 +247,45 @@ const Project = (props) => {
           </div>
         </div>
       )}
+
+      {/* Next action history (refactor as a popup modal in the future with a close button) */}
+      {nextActionHistoryItem && (
+        <div>
+          <button
+            onClick={() => {
+              setNextActionHistory([])
+              setNextActionHistoryItem('')
+            }}
+          >
+            Close Next Action History
+          </button>
+          <div>Next action history for {nextActionHistoryItem}</div>
+
+          {nextActionHistory.length > 0 ? (
+            <div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Previous</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nextActionHistory.map((row) => (
+                    <tr key={row._id}>
+                      <td>{row.data}</td>
+                      <td>{row.time}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div>No history for the item</div>
+          )}
+        </div>
+      )}
+
       {/* Table */}
       {isLoading ? (
         <div>Loading...</div>
@@ -308,6 +352,8 @@ const Project = (props) => {
                         <span
                           onClick={() => {
                             console.log(t.nextActionHistory)
+                            setNextActionHistoryItem(t.item)
+                            setNextActionHistory(t.nextActionHistory)
                           }}
                         >
                           {t.nextAction}

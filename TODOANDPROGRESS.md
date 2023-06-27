@@ -1,14 +1,17 @@
 # To do
-- [Client] Get basic frontend skeleton out: Next Action History page
 - [Client] Get basic frontend skeleton out: CRUD Functionality for project + sharing + unlock(if needed) + scenario if project locked
+- [Client] Settings Page (include stripe (just show for now; dont need actually connect to stripe))
+- [Client] Sorting for Tasks
+- [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
+- [Server + Client] Session for login
+- [Server + Client] Add OAuth (Gmail only first) as authentication
+
 - TBC... sometime in the future...
-- [Server] Add OAuth (Gmail only first) as authentication
 - [Server + Frontend] Stripe for recurring payments of premium tier [https://stripe.com/docs/billing/quickstart]
 - [Server + Frontend] Set up crypto payments for recurring payments premium tier
     - Create a smart contract to handle to recurring payments. The idea is: user sets allowance for ERC20 token > a server calls the smart contract every 1 month > the function called reduces the ERC20 balance directly from their wallet (try this out first) > upon success, server calls API to backend to change status to paid, if fail, change status to free
 - [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
 - [Server] Add auth for User routes for admin only
-- [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Server] Enable choosing of either read only or view only for sharing
 
@@ -40,3 +43,4 @@
 - 26/06/23: [Server] Drafted backend for stripe and oauth google. Need to revisit later
 - 27/06/23: [Client] Get basic frontend skeleton out: General App Structure, Login, Layout (Navbar and SideBar), Project (halfway)
 - 27/06/23: [Client] Get basic frontend skeleton out: CRUD Functionality for task
+- 27/06/23: [Client] Get basic frontend skeleton out: Next Action History; Need to refactor to a modal next time
