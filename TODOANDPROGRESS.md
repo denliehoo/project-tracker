@@ -1,5 +1,6 @@
 # To do
-- [Client] Get basic frontend skeleton out: Project, Next Action, ...
+- [Client] Get basic frontend skeleton out: Next Action History page
+- [Client] Get basic frontend skeleton out: CRUD Functionality for project + sharing + unlock(if needed) + scenario if project locked
 - TBC... sometime in the future...
 - [Server] Add OAuth (Gmail only first) as authentication
 - [Server + Frontend] Stripe for recurring payments of premium tier [https://stripe.com/docs/billing/quickstart]
@@ -38,3 +39,4 @@
     - Ensure if project is locked, there is validation on tasks that makes the user unable to access resource [ok]
 - 26/06/23: [Server] Drafted backend for stripe and oauth google. Need to revisit later
 - 27/06/23: [Client] Get basic frontend skeleton out: General App Structure, Login, Layout (Navbar and SideBar), Project (halfway)
+- 27/06/23: [Client] Get basic frontend skeleton out: CRUD Functionality for task
