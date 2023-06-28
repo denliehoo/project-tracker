@@ -6,6 +6,27 @@ import Sidebar from './Sidebar'
 import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 
+const layoutStyle = {
+  display: 'flex',
+  flexDirection: 'column', // horizontal layout
+  height: '100vh', // occupy the full viewport height
+}
+
+const mainContainerStyle = {
+  display: 'flex',
+  flex: '1', // occupy remaining vertical space
+}
+
+const sidebarStyle = {
+  width: '20%', // adjust the width as per your needs
+  background: '#f2f2f2', // sidebar background color
+}
+
+const mainStyle = {
+  flex: '1', // occupy remaining space
+  padding: '20px', // adjust the padding as per your needs
+}
+
 const Layout = (props) => {
   const { pathname } = useLocation()
   const [isLoading, setIsLoading] = useState(true)
@@ -13,7 +34,6 @@ const Layout = (props) => {
   const [sharedProject, setSharedProjects] = useState([])
   const [callApi, setCallApi] = useState(true)
   const apiUrl = process.env.REACT_APP_API_URL
-  console.log(apiUrl)
 
   const getProjects = async () => {
     console.log('api called')
@@ -48,16 +68,19 @@ const Layout = (props) => {
       {isLoading ? (
         <div>Loading.....</div>
       ) : (
-        <div>
+        <div style={layoutStyle}>
           {pathname !== '/login' && <Navbar />}
-          {pathname !== '/login' && (
-            <Sidebar
-              sharedProject={sharedProject}
-              ownProjects={ownProjects}
-              refreshProjects={getProjects}
-            />
-          )}
-          <main>{props.children}</main>
+          <div style={mainContainerStyle}>
+            {pathname !== '/login' && (
+              <Sidebar
+                sharedProject={sharedProject}
+                ownProjects={ownProjects}
+                refreshProjects={getProjects}
+                style={sidebarStyle}
+              />
+            )}
+            <main style={mainStyle}>{props.children}</main>
+          </div>
         </div>
       )}
     </div>

@@ -69,7 +69,6 @@ const Project = (props) => {
 
   return (
     <div>
-      <hr />
       <div>Project</div>
       <div>{projectId}</div>
       <div>

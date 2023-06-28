@@ -30,7 +30,7 @@ const Sidebar = (props) => {
   )
 
   return (
-    <div>
+    <div style={props.style}>
       <h2>Sidebar</h2>
       <div>
         <h2>Projects</h2>

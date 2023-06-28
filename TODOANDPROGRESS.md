@@ -55,3 +55,4 @@
     - add project in side bar [ok]
 - 28/06/23: [Client] Started with basic styling using Material UI
 - 28/06/23: [Client] Refactored Project component out into diffent files
+- 28/06/23: [Client] Basic layout structure for navbar and sidebar
