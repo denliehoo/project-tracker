@@ -1,9 +1,7 @@
 # To do
-- [Client] Get basic frontend skeleton out: 
-    - Update delete project button in project itself
-    - Sharing of project ( do in project itself)
-    - Unlock(if needed) (do in project itself)
-
+- [Client] work more on basic structure of share project and unlock
+    - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
+    - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
 - [Client] Settings Page (include stripe (just show for now and change status to paid; dont need actually connect to stripe yet))
 - [Client] Sorting for Tasks
 - [Client] Ensure proper error handling done
@@ -56,3 +54,8 @@
 - 28/06/23: [Client] Started with basic styling using Material UI
 - 28/06/23: [Client] Refactored Project component out into diffent files
 - 28/06/23: [Client] Basic layout structure for navbar and sidebar
+- 29/06/23: [Client] Added redux for sharing user details with other components
+- 29/06/23: [Client] Get basic frontend skeleton out: 
+    - Update delete project button in project itself[ok]
+    - Sharing of project ( do in project itself) [halfway]
+    - Unlock(if needed) (do in project itself) [halfway]

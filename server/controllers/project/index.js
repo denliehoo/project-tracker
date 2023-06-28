@@ -10,9 +10,13 @@ const getAllProjects = async (req, res) => {
   } catch {
     sharedProject = []
   }
+  const user = await findUserByEmail(email)
+  console.log(user.isPremium)
   projects = {
     owner: ownProjects,
     editor: sharedProject,
+    email: email,
+    isPremium: user.isPremium,
   }
 
   // ***temp for admin to see all***

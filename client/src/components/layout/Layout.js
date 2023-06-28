@@ -5,6 +5,8 @@ import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import { useLocation } from 'react-router-dom'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { addUserDetails } from '../../slices/userDetailsSlice'
 
 const layoutStyle = {
   display: 'flex',
@@ -33,6 +35,7 @@ const Layout = (props) => {
   const [ownProjects, setOwnProjects] = useState([])
   const [sharedProject, setSharedProjects] = useState([])
   const [callApi, setCallApi] = useState(true)
+  const dispatch = useDispatch()
   const apiUrl = process.env.REACT_APP_API_URL
 
   const getProjects = async () => {
@@ -44,11 +47,20 @@ const Layout = (props) => {
       const headers = {
         Authorization: token,
       }
-      const res = await axios.get(`${apiUrl}/projects`, {
+      let res = await axios.get(`${apiUrl}/projects`, {
         headers,
       })
-      setOwnProjects(res.data.owner)
-      setSharedProjects(res.data.editor)
+      const { owner, editor, email, isPremium } = res.data
+      setOwnProjects(owner)
+      setSharedProjects(editor)
+      dispatch(
+        addUserDetails({
+          email: email,
+          owner: owner,
+          editor: editor,
+          isPremium: isPremium,
+        }),
+      )
       setIsLoading(false)
       setCallApi(false)
     } catch (err) {

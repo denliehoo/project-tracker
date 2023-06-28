@@ -61,3 +61,16 @@ Once you have your Google Client ID and Client Secret, you can use them in your 
 Note when to use 403 and 401?
 401: use when user is just not authorized to do so (e.g. accessing someone else project = 401, unauthorized)
 403: use when user is forbidden to do so (e.g. accessing a locked project = 403, forbidden because no one can do it)
+---
+put and delete request for axios might follow a different format from get requests. For example, i was told i was unauthorized for put and delete axios, when in fact, it was just that the format is just  abit different from get. 
+For example, put request MUST have a body. If there is no body, put in null
+For delete request, if you have data, which usually isnt the case, cannot use the standard axios call, need do:
+const res = await axios.delete(
+                      `${apiUrl}/projects/${projectId}/sharing`,
+                      {
+                        headers: headers,
+                        data: {
+                          email: [emailToDelete],
+                        },
+                      },
+                    )
