@@ -19,6 +19,8 @@ const Project = (props) => {
   const [nextActionHistory, setNextActionHistory] = useState([])
   const [nextActionHistoryItem, setNextActionHistoryItem] = useState('')
 
+  const [isForbidden, setIsForbidden] = useState(false)
+
   const token = localStorage.getItem('JWT')
   const handleCheckboxChange = (rowId) => {
     setError('')
@@ -35,6 +37,7 @@ const Project = (props) => {
     setSelectedRow(null)
     setNextActionHistory([])
     setNextActionHistoryItem('')
+    setIsForbidden(false)
   }
   const getTasks = async () => {
     try {
@@ -49,7 +52,10 @@ const Project = (props) => {
       setIsLoading(false)
       setTasks(res.data)
     } catch (err) {
-      console.log(err)
+      resetState()
+      setError(err.response.data.error)
+      if (err.response.status === 403) setIsForbidden(true)
+      setIsLoading(false)
     }
   }
 
@@ -60,6 +66,7 @@ const Project = (props) => {
 
   return (
     <div>
+      <hr />
       <div>Project</div>
       <div>{projectId}</div>
       <div>
@@ -115,17 +122,17 @@ const Project = (props) => {
         >
           Add Task
         </button>
+        {/* delete task button */}
+        <button
+          onClick={() => {
+            console.log('attempt delete task!')
+            if (!selectedRow) return setError('Please select a row to delete')
+            setIsConfirmDelete(true)
+          }}
+        >
+          Delete Task
+        </button>
       </div>
-      {/* delete task button */}
-      <button
-        onClick={() => {
-          console.log('attempt delete task!')
-          if (!selectedRow) return setError('Please select a row to delete')
-          setIsConfirmDelete(true)
-        }}
-      >
-        Delete Task
-      </button>
 
       {error && <div>{error}</div>}
 
@@ -289,6 +296,8 @@ const Project = (props) => {
       {/* Table */}
       {isLoading ? (
         <div>Loading...</div>
+      ) : isForbidden ? (
+        <div>Thou art forbidden my ass</div>
       ) : (
         <div>
           <table>

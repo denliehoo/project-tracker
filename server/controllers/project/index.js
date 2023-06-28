@@ -35,7 +35,7 @@ const createProject = async (req, res) => {
   let project, user
   user = await findUserByEmail(req.email)
   if (!user.isPremium && user.ownProjects.length > 0)
-    return res.status(401).json({ error: 'Free users can only own 1 board' })
+    return res.status(403).json({ error: 'Free users can only own 1 board' })
 
   try {
     project = await Project.create({

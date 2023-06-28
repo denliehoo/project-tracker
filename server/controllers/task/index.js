@@ -17,7 +17,7 @@ const getAllTasksForProject = async (req, res) => {
   const id = req.params.id
   const canAccess = await checkIfOwnerOrEditor(req.email, id)
   if (!canAccess)
-    return res.status(403).json({ error: 'You are not authorized' })
+    return res.status(401).json({ error: 'You are not authorized' })
 
   const isProjectLocked = await checkIfProjectLocked(id)
   if (isProjectLocked)
@@ -36,7 +36,7 @@ const createTask = async (req, res) => {
     let { item, nextAction, priority, project } = req.body
     const canAccess = await checkIfOwnerOrEditor(req.email, project)
     if (!canAccess)
-      return res.status(403).json({ error: 'You are not authorized' })
+      return res.status(401).json({ error: 'You are not authorized' })
 
     const isProjectLocked = await checkIfProjectLocked(project)
     if (isProjectLocked)
@@ -58,7 +58,7 @@ const updateTask = async (req, res) => {
 
   const canAccess = await checkIfOwnerOrEditor(req.email, task.project)
   if (!canAccess)
-    return res.status(403).json({ error: 'You are not authorized' })
+    return res.status(401).json({ error: 'You are not authorized' })
 
   const isProjectLocked = await checkIfProjectLocked(task.project)
   if (isProjectLocked)
@@ -89,7 +89,7 @@ const deleteTask = async (req, res) => {
 
   const canAccess = await checkIfOwnerOrEditor(req.email, task.project)
   if (!canAccess)
-    return res.status(403).json({ error: 'You are not authorized' })
+    return res.status(401).json({ error: 'You are not authorized' })
 
   const isProjectLocked = await checkIfProjectLocked(task.project)
   if (isProjectLocked)

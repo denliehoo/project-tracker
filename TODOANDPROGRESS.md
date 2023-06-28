@@ -1,7 +1,13 @@
 # To do
-- [Client] Get basic frontend skeleton out: CRUD Functionality for project + sharing + unlock(if needed) + scenario if project locked
-- [Client] Settings Page (include stripe (just show for now; dont need actually connect to stripe))
+- [Client] Basic Styling using Material UI
+- [Client] Get basic frontend skeleton out: 
+    - Update delete project button in project itself
+    - Sharing
+    - Unlock(if needed) 
+
+- [Client] Settings Page (include stripe (just show for now and change status to paid; dont need actually connect to stripe yet))
 - [Client] Sorting for Tasks
+- [Client] Ensure proper error handling done
 - [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
 - [Server + Client] Session for login
 - [Server + Client] Add OAuth (Gmail only first) as authentication
@@ -44,3 +50,6 @@
 - 27/06/23: [Client] Get basic frontend skeleton out: General App Structure, Login, Layout (Navbar and SideBar), Project (halfway)
 - 27/06/23: [Client] Get basic frontend skeleton out: CRUD Functionality for task
 - 27/06/23: [Client] Get basic frontend skeleton out: Next Action History; Need to refactor to a modal next time
+- 28/06/23: [Client] Get basic frontend skeleton out:
+    - Scenario if project locked; users shouldn't be able to access data; it will open but it shows a locked screen. Still can access action toolbar[ok]
+    - add project in side bar [ok]

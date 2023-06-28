@@ -12,7 +12,7 @@ const projectSchema = new mongoose.Schema(
     },
     id: {
       type: String,
-      required: true,
+      required: false,
     },
     owner: {
       type: String,

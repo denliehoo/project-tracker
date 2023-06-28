@@ -32,6 +32,7 @@ summary:
 -Split resources up through authorization and designed permissions to ensure certain resources .... using custom middlewares....
 -Implemented OAuth2.0... integrate seamlessly within database.... give user option to oauth or password.... google login....
 -2FA implementaion using google authenticator...
+-Material UI for styling....
 
 
 ---
@@ -56,3 +57,7 @@ Obtain your Client ID and Client Secret: Once you have created the OAuth client 
 Make sure to keep your Client Secret confidential and avoid exposing it in public repositories or client-side code.
 
 Once you have your Google Client ID and Client Secret, you can use them in your backend code when configuring the Google OAuth strategy, as shown in the previous code example.
+---
+Note when to use 403 and 401?
+401: use when user is just not authorized to do so (e.g. accessing someone else project = 401, unauthorized)
+403: use when user is forbidden to do so (e.g. accessing a locked project = 403, forbidden because no one can do it)
