@@ -3,9 +3,14 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import CustomModal from '../UI/CustomModal'
+
 const Sidebar = (props) => {
   const [isAddProject, setIsAddProject] = useState(false)
   const [addProjectDetails, setAddProjectDetails] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
   const token = localStorage.getItem('JWT')
   const apiUrl = process.env.REACT_APP_API_URL
 
@@ -38,73 +43,91 @@ const Sidebar = (props) => {
       </div>
       {/* Add Projects */}
       <div>
-        <button
+        <Button
+          variant="outlined"
           onClick={() => {
             console.log('attempt to add')
             setIsAddProject(true)
           }}
         >
           Add Project
-        </button>
+        </Button>
       </div>
       {/* Add Project Modal (refactor in the future to a modal) */}
-      {isAddProject && (
-        <div>
-          <div>Add proj details..</div>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={addProjectDetails.name || ''}
-              onChange={(event) => {
-                setAddProjectDetails({
-                  ...addProjectDetails,
-                  name: event.target.value,
-                })
-              }}
-            />
-          </label>
-          <label>
-            Description:
-            <input
-              type="text"
-              value={addProjectDetails.description || ''}
-              onChange={(event) => {
-                setAddProjectDetails({
-                  ...addProjectDetails,
-                  description: event.target.value,
-                })
-              }}
-            />
-          </label>
-          <button
-            onClick={() => {
-              console.log(addProjectDetails)
-              const addProject = async () => {
-                try {
-                  if (!token) throw new Error('JWT Token doesnt exist')
-                  const headers = {
-                    Authorization: token,
+      <CustomModal
+        open={isAddProject}
+        onClose={() => {
+          setIsAddProject(false)
+        }}
+      >
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <div>
+            <Typography variant="h5">Add Project</Typography>
+            <div>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  value={addProjectDetails.name || ''}
+                  onChange={(event) => {
+                    setAddProjectDetails({
+                      ...addProjectDetails,
+                      name: event.target.value,
+                    })
+                  }}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Description:
+                <input
+                  type="text"
+                  value={addProjectDetails.description || ''}
+                  onChange={(event) => {
+                    setAddProjectDetails({
+                      ...addProjectDetails,
+                      description: event.target.value,
+                    })
+                  }}
+                />
+              </label>
+            </div>
+            <button
+              onClick={() => {
+                console.log(addProjectDetails)
+                const addProject = async () => {
+                  try {
+                    setIsLoading(true)
+                    if (!token) throw new Error('JWT Token doesnt exist')
+                    const headers = {
+                      Authorization: token,
+                    }
+                    const res = await axios.post(
+                      `${apiUrl}/projects`,
+                      addProjectDetails,
+                      {
+                        headers,
+                      },
+                    )
+                    console.log(res)
+                    setIsLoading(false)
+                    setIsAddProject(false)
+                    props.refreshProjects()
+                  } catch (err) {
+                    console.log(err)
                   }
-                  const res = await axios.post(
-                    `${apiUrl}/projects`,
-                    addProjectDetails,
-                    {
-                      headers,
-                    },
-                  )
-                  console.log(res)
-                } catch (err) {
-                  console.log(err)
                 }
-              }
-              addProject()
-            }}
-          >
-            Confirm Add Project
-          </button>
-        </div>
-      )}
+                addProject()
+              }}
+            >
+              Confirm Add Project
+            </button>
+          </div>
+        )}
+      </CustomModal>
     </div>
   )
 }

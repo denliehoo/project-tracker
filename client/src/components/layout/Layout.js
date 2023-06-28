@@ -15,26 +15,27 @@ const Layout = (props) => {
   const apiUrl = process.env.REACT_APP_API_URL
   console.log(apiUrl)
 
-  useEffect(() => {
-    const getProjects = async () => {
-      console.log('api called')
-      try {
-        const token = localStorage.getItem('JWT')
-        if (!token) throw new Error('JWT Token doesnt exist')
-        const headers = {
-          Authorization: token,
-        }
-        const res = await axios.get(`${apiUrl}/projects`, {
-          headers,
-        })
-        setOwnProjects(res.data.owner)
-        setSharedProjects(res.data.editor)
-        setIsLoading(false)
-        setCallApi(false)
-      } catch (err) {
-        console.log(err)
+  const getProjects = async () => {
+    console.log('api called')
+    try {
+      setIsLoading(true)
+      const token = localStorage.getItem('JWT')
+      if (!token) throw new Error('JWT Token doesnt exist')
+      const headers = {
+        Authorization: token,
       }
+      const res = await axios.get(`${apiUrl}/projects`, {
+        headers,
+      })
+      setOwnProjects(res.data.owner)
+      setSharedProjects(res.data.editor)
+      setIsLoading(false)
+      setCallApi(false)
+    } catch (err) {
+      console.log(err)
     }
+  }
+  useEffect(() => {
     if (pathname !== '/login' && callApi) {
       getProjects()
     } else {
@@ -50,7 +51,11 @@ const Layout = (props) => {
         <div>
           {pathname !== '/login' && <Navbar />}
           {pathname !== '/login' && (
-            <Sidebar sharedProject={sharedProject} ownProjects={ownProjects} />
+            <Sidebar
+              sharedProject={sharedProject}
+              ownProjects={ownProjects}
+              refreshProjects={getProjects}
+            />
           )}
           <main>{props.children}</main>
         </div>

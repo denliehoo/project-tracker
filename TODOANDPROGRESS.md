@@ -1,14 +1,14 @@
 # To do
-- [Client] Basic Styling using Material UI
 - [Client] Get basic frontend skeleton out: 
     - Update delete project button in project itself
-    - Sharing
-    - Unlock(if needed) 
+    - Sharing of project ( do in project itself)
+    - Unlock(if needed) (do in project itself)
 
 - [Client] Settings Page (include stripe (just show for now and change status to paid; dont need actually connect to stripe yet))
 - [Client] Sorting for Tasks
 - [Client] Ensure proper error handling done
 - [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
+- [Client] Basic styling using MUI
 - [Server + Client] Session for login
 - [Server + Client] Add OAuth (Gmail only first) as authentication
 
@@ -53,3 +53,5 @@
 - 28/06/23: [Client] Get basic frontend skeleton out:
     - Scenario if project locked; users shouldn't be able to access data; it will open but it shows a locked screen. Still can access action toolbar[ok]
     - add project in side bar [ok]
+- 28/06/23: [Client] Started with basic styling using Material UI
+- 28/06/23: [Client] Refactored Project component out into diffent files

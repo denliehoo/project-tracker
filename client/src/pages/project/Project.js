@@ -1,6 +1,9 @@
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import AddTaskModal from './components/AddTaskModal'
+import DeleteTaskModal from './components/DeleteTaskModal'
+import NextActionHistoryModal from './components/NextActionHistoryModal'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -12,8 +15,9 @@ const Project = (props) => {
   const [selectedRow, setSelectedRow] = useState(null)
   const [isEdit, setIsEdit] = useState(false)
   const [selectedRowDetails, setSelectedRowDetails] = useState({})
+
   const [isAddTask, setIsAddTask] = useState(false)
-  const [addTaskDetails, setAddTaskDetails] = useState({})
+
   const [isConfirmDelete, setIsConfirmDelete] = useState(false)
 
   const [nextActionHistory, setNextActionHistory] = useState([])
@@ -33,7 +37,6 @@ const Project = (props) => {
     setIsAddTask(false)
     setIsConfirmDelete(false)
     setSelectedRowDetails({})
-    setAddTaskDetails({})
     setSelectedRow(null)
     setNextActionHistory([])
     setNextActionHistoryItem('')
@@ -134,165 +137,42 @@ const Project = (props) => {
         </button>
       </div>
 
+      {/* Delete Task Confirmation Modal */}
+      <DeleteTaskModal
+        open={isConfirmDelete}
+        onClose={() => setIsConfirmDelete(false)}
+        token={token}
+        apiUrl={apiUrl}
+        selectedRow={selectedRow}
+        resetState={resetState}
+        getTasks={getTasks}
+      />
+
+      {/* Add Task Modal*/}
+      <AddTaskModal
+        open={isAddTask}
+        onClose={() => {
+          setIsAddTask(false)
+        }}
+        token={token}
+        apiUrl={apiUrl}
+        projectId={projectId}
+        resetState={resetState}
+        getTasks={getTasks}
+      />
+
+      {/* Next action history */}
+      <NextActionHistoryModal
+        open={nextActionHistoryItem}
+        onClose={() => {
+          setNextActionHistory([])
+          setNextActionHistoryItem('')
+        }}
+        nextActionHistory={nextActionHistory}
+        nextActionHistoryItem={nextActionHistoryItem}
+      />
+
       {error && <div>{error}</div>}
-
-      {/* Delete Task confirmation (refactor next time) */}
-      {isConfirmDelete && (
-        <button
-          onClick={() => {
-            console.log('deleted!!!!!!')
-            const deleteTask = async () => {
-              setIsLoading(true)
-              try {
-                if (!token) throw new Error('JWT Token doesnt exist')
-                const headers = {
-                  Authorization: token,
-                }
-                const res = await axios.delete(
-                  `${apiUrl}/tasks/${selectedRow}`,
-                  {
-                    headers,
-                  },
-                )
-                console.log(res)
-
-                setIsLoading(false)
-                resetState()
-
-                await getTasks()
-              } catch (err) {
-                console.log(err)
-              }
-            }
-            deleteTask()
-          }}
-        >
-          Confirm Delete
-        </button>
-      )}
-
-      {/* Add  Task Module (refactor next time)*/}
-      {isAddTask && (
-        <div>
-          <h3>Add Task </h3>
-          <div>
-            <label>
-              Item:
-              <input
-                type="text"
-                value={addTaskDetails.item || ''}
-                onChange={(event) => {
-                  setAddTaskDetails({
-                    ...addTaskDetails,
-                    item: event.target.value,
-                  })
-                }}
-              />
-            </label>
-
-            <label>
-              Next Action:
-              <input
-                type="text"
-                value={addTaskDetails.nextAction || ''}
-                onChange={(event) => {
-                  setAddTaskDetails({
-                    ...addTaskDetails,
-                    nextAction: event.target.value,
-                  })
-                }}
-              />
-            </label>
-
-            <label>
-              Priority:
-              <input
-                type="number"
-                value={addTaskDetails.priority || ''}
-                onChange={(event) => {
-                  setAddTaskDetails({
-                    ...addTaskDetails,
-                    priority: event.target.value,
-                  })
-                }}
-              />
-            </label>
-
-            <div>
-              <button
-                onClick={() => {
-                  setIsLoading(true)
-                  const addTask = async () => {
-                    try {
-                      if (!token) throw new Error('JWT Token doesnt exist')
-                      const headers = {
-                        Authorization: token,
-                      }
-                      const res = await axios.post(
-                        `${apiUrl}/tasks`,
-                        { ...addTaskDetails, project: projectId },
-                        {
-                          headers,
-                        },
-                      )
-                      console.log(res)
-
-                      setIsLoading(false)
-                      resetState()
-
-                      await getTasks()
-                    } catch (err) {
-                      console.log(err)
-                    }
-                  }
-                  addTask()
-                }}
-              >
-                Confirm Add Task
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Next action history (refactor as a popup modal in the future with a close button) */}
-      {nextActionHistoryItem && (
-        <div>
-          <button
-            onClick={() => {
-              setNextActionHistory([])
-              setNextActionHistoryItem('')
-            }}
-          >
-            Close Next Action History
-          </button>
-          <div>Next action history for {nextActionHistoryItem}</div>
-
-          {nextActionHistory.length > 0 ? (
-            <div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Previous</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {nextActionHistory.map((row) => (
-                    <tr key={row._id}>
-                      <td>{row.data}</td>
-                      <td>{row.time}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div>No history for the item</div>
-          )}
-        </div>
-      )}
-
       {/* Table */}
       {isLoading ? (
         <div>Loading...</div>
