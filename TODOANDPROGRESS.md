@@ -1,26 +1,6 @@
 # To do
-- [Server + Frontend] Stripe for recurring payments of premium tier [https://stripe.com/docs/billing/quickstart] [https://www.youtube.com/watch?v=1r-F3FIONl8]
-    - https://saasbase.dev/blog/subscription-payments-1-adding-basic-and-pro-subscription-plans-using-stripe [ok?]
-    - https://saasbase.dev/blog/subscription-payments-2-keeping-track-of-customer-billing-information-using-mongo-and-stripe-webhooks [halfway; managed to connect webhook to create subscription and it is linked to the customerId; next step is to call the start subscription API]
-    - https://saasbase.dev/blog/subscription-payments-3-update-and-cancel-plans-via-a-manage-billing-screen-using-stripe
-    - https://saasbase.dev/blog/subscription-payments-4-access-premium-content-based-on-a-subscription-plan
-    - https://saasbase.dev/blog/subscription-payments-1-adding-basic-and-pro-subscription-plans-using-stripe
-    - https://github.com/bdcorps/stripe-subscriptions-nodejs
-    - Note, for testing local with stripe, need to install stripe cli from stripe website. 
-    - For windows, after downloading, need add path variable:
-    - in git bash:
-        - notepad ~/.bashrc
-        - copy paste the path to the downloaded and extracted stripe; put this in notepad and save:
-        - export PATH="/drive/path/to/folder/with/stripe:$PATH" e.g. for me, it is in downloads/stripe folder. Hence, i used below
-        - export PATH="/d/Users/Denli/Downloads/stripe:$PATH"
-        - save and close the notepad then restart terminal
-        - stripe login
-        - cancel, then do this to listen to the webhook; put whatever endpoint and localhost pot being used
-        - stripe listen --forward-to localhost:3001/payments/stripe/webhook
-        - now, when we do stuff, we with stripe, it will send a event to that endpoint. Note:this is for local testing only. 
-        - we also have to do stripe listen ..... whenver we want to do local testing
-    - testing credit card number: 4242424242424242
-
+- [Server + Frontend] allow clients to handle their subscriptions in stripe
+- [Server + Frontend] need to ensure that if the current date has passed the subscription enddate (as can be seen in User entity) that it automatically changes the plan to none and isPremium to false. Can maybe do this at the start when we get client details in the Layout.js 
 - [Client] Settings Page (include stripe (just show for now and change status to paid; dont need actually connect to stripe yet))
 - [Client] Sorting for Tasks
 - [Client] Ensure proper error handling done
@@ -39,6 +19,7 @@
 - [Server] Add auth for User routes for admin only
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Server] Enable choosing of either read only or view only for sharing
+- [Server] Once deployed, get a proper webhook from stripe and get the according keys and place it in the code (payments controller). This is because currently, webhook is only done in local env
 
 
 # Done
@@ -80,3 +61,4 @@
     - Update delete project button in project itself[ok]
     - Sharing of project ( do in project itself) [halfway]
     - Unlock(if needed) (do in project itself) [halfway]
+- 30/06/23: [Client + Server] Enabled stripe for recurring payments. User becomes premium upon confirmation of payment from the webhook stripe sends. Changed User Entity accordingly to include stripeId, plan details and end date for subscription

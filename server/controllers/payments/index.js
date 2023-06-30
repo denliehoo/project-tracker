@@ -1,9 +1,6 @@
 // // This is a public sample test API key.
 // // Don’t submit any personally identifiable information in reqs made with this key.
 // // Sign in to see your own test API key embedded in code samples.
-// // const stripe = require("stripe")(
-// //   "sk_test_51NKzsbCwDHaI7XNrv4PMB7yVu1rZv01RqBcjRN39lPo5ZSemq3OWJRvuOfZT0pYGFQXsnicZ8ubrRV3NEFc0oNxy00sHqnPPWU"
-// // );
 // const stripe = require("stripe")("sk_test_Ou1w6LVt3zmVipDVJsvMeQsc");
 
 // const handleStripeWebhook = async (req, res) => {
@@ -126,39 +123,39 @@
 //   let subscription;
 //   let status;
 //   // Handle the event
-//   switch (event.type) {
-//     case "customer.subscription.trial_will_end":
-//       subscription = event.data.object;
-//       status = subscription.status;
-//       console.log(`Subscription status is ${status}.`);
-//       // Then define and call a method to handle the subscription trial ending.
-//       // handleSubscriptionTrialEnding(subscription);
-//       break;
-//     case "customer.subscription.deleted":
-//       subscription = event.data.object;
-//       status = subscription.status;
-//       console.log(`Subscription status is ${status}.`);
-//       // Then define and call a method to handle the subscription deleted.
-//       // handleSubscriptionDeleted(subscriptionDeleted);
-//       break;
-//     case "customer.subscription.created":
-//       subscription = event.data.object;
-//       status = subscription.status;
-//       console.log(`Subscription status is ${status}.`);
-//       // Then define and call a method to handle the subscription created.
-//       // handleSubscriptionCreated(subscription);
-//       break;
-//     case "customer.subscription.updated":
-//       subscription = event.data.object;
-//       status = subscription.status;
-//       console.log(`Subscription status is ${status}.`);
-//       // Then define and call a method to handle the subscription update.
-//       // handleSubscriptionUpdated(subscription);
-//       break;
-//     default:
-//       // Unexpected event type
-//       console.log(`Unhandled event type ${event.type}.`);
-//   }
+// switch (event.type) {
+//   case "customer.subscription.trial_will_end":
+//     subscription = event.data.object;
+//     status = subscription.status;
+//     console.log(`Subscription status is ${status}.`);
+//     // Then define and call a method to handle the subscription trial ending.
+//     // handleSubscriptionTrialEnding(subscription);
+//     break;
+//   case "customer.subscription.deleted":
+//     subscription = event.data.object;
+//     status = subscription.status;
+//     console.log(`Subscription status is ${status}.`);
+//     // Then define and call a method to handle the subscription deleted.
+//     // handleSubscriptionDeleted(subscriptionDeleted);
+//     break;
+//   case "customer.subscription.created":
+//     subscription = event.data.object;
+//     status = subscription.status;
+//     console.log(`Subscription status is ${status}.`);
+//     // Then define and call a method to handle the subscription created.
+//     // handleSubscriptionCreated(subscription);
+//     break;
+//   case "customer.subscription.updated":
+//     subscription = event.data.object;
+//     status = subscription.status;
+//     console.log(`Subscription status is ${status}.`);
+//     // Then define and call a method to handle the subscription update.
+//     // handleSubscriptionUpdated(subscription);
+//     break;
+//   default:
+//     // Unexpected event type
+//     console.log(`Unhandled event type ${event.type}.`);
+// }
 //   // Return a 200 res to acknowledge receipt of the event
 //   res.send();
 // };
@@ -173,35 +170,48 @@
 // };
 
 // refactor in the future
-const stripe = require("stripe")(
-  "sk_test_51NOMawEiIAzhG1HpONjt6r2PTLVwN2k3T2iO1AaLeCq61BpV7OucZt3hbuHBPPwRcn1z59mX7HYxcHjM8MQceNzH00Pxq5YZOC"
-);
-import models from "../../models";
-const { User } = models;
+require('dotenv').config()
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+import models from '../../models'
+const { User } = models
 
 const productToPriceMap = {
-  monthly: "price_1NOMekEiIAzhG1HpOZme9Ow1",
-  annual: "price_1NOMeyEiIAzhG1HpmdYApJtV",
-};
+  monthly: 'price_1NOMekEiIAzhG1HpOZme9Ow1',
+  annual: 'price_1NOMeyEiIAzhG1HpmdYApJtV',
+}
+const priceToProductMap = {
+  price_1NOMekEiIAzhG1HpOZme9Ow1: 'monthly',
+  price_1NOMeyEiIAzhG1HpmdYApJtV: 'annual',
+}
 
 const findUserByEmail = async (email) => {
   try {
-    const user = await User.find({ email: email });
-    return user[0];
+    const user = await User.find({ email: email })
+    return user[0]
   } catch {
-    return null;
+    return null
   }
-};
+}
+
+const findUserByStripeId = async (id) => {
+  try {
+    const user = await User.find({ stripeId: id })
+    return user[0]
+  } catch {
+    return null
+  }
+}
 
 const createCheckoutSession = async (req, res) => {
-  const YOUR_DOMAIN = "http://localhost:3000";
+  console.log(process.env.STRIPE_SECRET_KEY)
+  const YOUR_DOMAIN = 'http://localhost:3000'
   // how do i get customerID in here?
-  console.log(req.email);
-  const user = await findUserByEmail(req.email);
-  console.log(user);
+  console.log(req.email)
+  const user = await findUserByEmail(req.email)
+  console.log(user)
   const session = await stripe.checkout.sessions.create({
     customer: user.stripeId,
-    billing_address_collection: "auto",
+    billing_address_collection: 'auto',
     line_items: [
       {
         price: productToPriceMap.annual,
@@ -209,48 +219,180 @@ const createCheckoutSession = async (req, res) => {
         quantity: 1,
       },
     ],
-    mode: "subscription",
+    mode: 'subscription',
     success_url: `${YOUR_DOMAIN}/settings`,
     cancel_url: `${YOUR_DOMAIN}/dashboard`,
-  });
+  })
 
-  return res.json({ url: session.url });
-};
+  return res.json({ url: session.url })
+}
 
-const createPortalSession = async (req, res) => {};
+const createPortalSession = async (req, res) => {}
 
 const stripeWebhook = (request, response) => {
-  console.log("stripe calling");
-  console.log(request.body);
-  const sig = request.headers["stripe-signature"];
+  const sig = request.headers['stripe-signature']
   const endpointSecret =
-    "whsec_83e6050341b6a3b6a784d1c741259f2be7a07e196e67a2158bdabfb408d560ce";
+    'whsec_83e6050341b6a3b6a784d1c741259f2be7a07e196e67a2158bdabfb408d560ce'
 
-  let event;
+  let event
+  let subscription
+  let status
 
   try {
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-    console.log("*****STRIPE CALLED THE WEBHOOK*****");
-    console.log(event);
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret)
+    // console.log(event)
   } catch (err) {
-    console.log("an error...");
-    console.log(err);
-    response.status(400).send(`Webhook Error: ${err.message}`);
-    return;
+    console.log('an error...')
+    console.log(err)
+    response.status(400).send(`Webhook Error: ${err.message}`)
+    return
   }
 
   // Handle the event
   switch (event.type) {
-    case "payment_intent.succeeded":
-      const paymentIntentSucceeded = event.data.object;
-      // Then define and call a function to handle the event payment_intent.succeeded
-      break;
-    // ... handle other event types
+    case 'customer.subscription.trial_will_end':
+      subscription = event.data.object
+      status = subscription.status
+      console.log(`Subscription status is ${status}.`)
+      // Then define and call a method to handle the subscription trial ending.
+      // handleSubscriptionTrialEnding(subscription);
+      break
+    case 'customer.subscription.deleted':
+      subscription = event.data.object
+      status = subscription.status
+      console.log(`Subscription status is ${status}.`)
+      // Then define and call a method to handle the subscription deleted.
+      // handleSubscriptionDeleted(subscriptionDeleted);
+      break
+    // create can still have a status of inactive since its just a create
+    // over here, dont really need to do anything
+    case 'customer.subscription.created':
+      subscription = event.data.object
+      status = subscription.status
+      console.log(`Subscription status is ${status}.`)
+      // Then define and call a method to handle the subscription created.
+      // handleSubscriptionCreated(subscription);
+      break
+    // update here could mean that the user paid, or, paid again for the next subscription
+    // over here, need to change status to premium
+    case 'customer.subscription.updated':
+      subscription = event.data.object
+      status = subscription.status
+      console.log(`Subscription status is ${status}.`)
+      console.log('***** LOOOK HERE*****')
+      console.log(event)
+      console.log('***** LOOOK HERE*****')
+      console.log(event.data.object.plan)
+      // Then define and call a method to handle the subscription update.
+      handleSubscriptionUpdated(subscription)
+      break
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      // Unexpected event type
+      console.log(`Unhandled event type ${event.type}.`)
   }
 
   // Return a 200 response to acknowledge receipt of the event
-  response.send();
-};
-export { createCheckoutSession, createPortalSession, stripeWebhook };
+  response.send()
+}
+
+// pass event.data.object here
+const handleSubscriptionUpdated = async (d) => {
+  let user = await findUserByStripeId(d.customer)
+  if (!user.isPremium) {
+    user.isPremium = true
+    for (let p of user.ownProjects) {
+      p.locked = false
+    }
+  }
+  user.plan = priceToProductMap[d.plan.id]
+  // need to *1000 to make it accurate; not sure why... but ok
+  user.endDate = new Date(d.current_period_end * 1000)
+  await user.save()
+  console.log('User updgraded to premium')
+}
+export { createCheckoutSession, createPortalSession, stripeWebhook }
+
+// for the variable event
+// const sampleEventDataFromSubscriptionUpdated = {
+//   id: 'evt_1NOd4DEiIAzhG1Hpg8B7as2d',
+//   object: 'event',
+//   api_version: '2022-11-15',
+//   created: 1688115156,
+//   data: {
+//     object: {
+//       id: 'sub_1NOd4AEiIAzhG1HpWHdDxq20',
+//       object: 'subscription',
+//       application: null,
+//       application_fee_percent: null,
+//       automatic_tax: [Object],
+//       billing_cycle_anchor: 1688115154,
+//       billing_thresholds: null,
+//       cancel_at: null,
+//       cancel_at_period_end: false,
+//       canceled_at: null,
+//       cancellation_details: [Object],
+//       collection_method: 'charge_automatically',
+//       created: 1688115154,
+//       currency: 'sgd',
+//       current_period_end: 1719737554,
+//       current_period_start: 1688115154,
+//       customer: 'cus_OAsz0Tk5M6ZbTG',
+//       days_until_due: null,
+//       default_payment_method: 'pm_1NOXOOEiIAzhG1HpiPovRA4B',
+//       default_source: null,
+//       default_tax_rates: [],
+//       description: null,
+//       discount: null,
+//       ended_at: null,
+//       items: [Object],
+//       latest_invoice: 'in_1NOd4AEiIAzhG1HpT8uY1tPQ',
+//       livemode: false,
+//       metadata: {},
+//       next_pending_invoice_item_invoice: null,
+//       on_behalf_of: null,
+//       pause_collection: null,
+//       payment_settings: [Object],
+//       pending_invoice_item_interval: null,
+//       pending_setup_intent: null,
+//       pending_update: null,
+//       plan: {
+//         id: 'price_1NOMeyEiIAzhG1HpmdYApJtV',
+//         object: 'plan',
+//         active: true,
+//         aggregate_usage: null,
+//         amount: 2000,
+//         amount_decimal: '2000',
+//         billing_scheme: 'per_unit',
+//         created: 1688052088,
+//         currency: 'sgd',
+//         interval: 'year',
+//         interval_count: 1,
+//         livemode: false,
+//         metadata: {},
+//         nickname: null,
+//         product: 'prod_OAi5wtyVwUOW2b',
+//         tiers_mode: null,
+//         transform_usage: null,
+//         trial_period_days: null,
+//         usage_type: 'licensed',
+//       },
+//       quantity: 1,
+//       schedule: null,
+//       start_date: 1688115154,
+//       status: 'active',
+//       test_clock: null,
+//       transfer_data: null,
+//       trial_end: null,
+//       trial_settings: [Object],
+//       trial_start: null,
+//     },
+//     previous_attributes: { default_payment_method: null, status: 'incomplete' },
+//   },
+//   livemode: false,
+//   pending_webhooks: 2,
+//   request: {
+//     id: 'req_6xmBpKb2QwWsNv',
+//     idempotency_key: '289cbf11-0400-4d47-af03-11f96be4d2d6',
+//   },
+//   type: 'customer.subscription.updated',
+// }
