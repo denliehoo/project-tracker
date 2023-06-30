@@ -11,6 +11,7 @@ const authenticateJWT = (req, res, next) => {
       next()
     })
   } else {
+    console.log('unauth')
     res.sendStatus(401) // Unauthorized
   }
 }

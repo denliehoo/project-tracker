@@ -1,13 +1,10 @@
 # To do
-- [Server + Frontend] allow clients to handle their subscriptions in stripe
-- [Server + Frontend] need to ensure that if the current date has passed the subscription enddate (as can be seen in User entity) that it automatically changes the plan to none and isPremium to false. Can maybe do this at the start when we get client details in the Layout.js 
-- [Client] Settings Page (include stripe (just show for now and change status to paid; dont need actually connect to stripe yet))
 - [Client] Sorting for Tasks
-- [Client] Ensure proper error handling done
-- [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
-- [Client] Basic styling using MUI
 - [Server + Client] Session for login
+- [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
 - [Server + Client] Add OAuth (Gmail only first) as authentication
+- [Client] Ensure proper error handling done
+- [Client] Basic styling using MUI
 
 - TBC... sometime in the future...
 - [Server + Frontend] Set up crypto payments for recurring payments premium tier
@@ -62,3 +59,5 @@
     - Sharing of project ( do in project itself) [halfway]
     - Unlock(if needed) (do in project itself) [halfway]
 - 30/06/23: [Client + Server] Enabled stripe for recurring payments. User becomes premium upon confirmation of payment from the webhook stripe sends. Changed User Entity accordingly to include stripeId, plan details and end date for subscription
+- 30/06/23: [Server + Frontend] allow clients to handle their subscriptions in stripe
+- 30/06/23: [Server + Frontend] need to ensure that if the current date has passed the subscription enddate (as can be seen in User entity) that it automatically changes the plan to none and isPremium to false. Can maybe do this at the start when we get client details in the Layout.js 

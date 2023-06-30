@@ -161,6 +161,24 @@ const googleAuthCallback = async (req, res, next) => {
     },
   )(req, res, next)
 }
+
+const getUserByEmail = async (req, res) => {
+  if (req.email !== req.body.email)
+    return res.status(401).json({
+      error: 'You are not forbidden to see this as you are not the user',
+    })
+  let user = await findUserByEmail(req.email)
+  // if date and time now is later than the end date change is premium to false, endDate to null and plan to 'none'
+  // if user is premium and there is a end date and the end date is before the current date (i.e. susbscription ended)
+  if (user.isPremium && user.endDate && new Date(Date.now()) > user.endDate) {
+    user.isPremium = false
+    user.endDate = null
+    user.plan = 'none'
+    await user.save()
+  }
+
+  return res.send(user)
+}
 // helper functions
 const findUserById = async (id) => {
   try {
@@ -188,4 +206,5 @@ export {
   changePaidStatus,
   googleAuth,
   googleAuthCallback,
+  getUserByEmail,
 }

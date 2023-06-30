@@ -7,13 +7,16 @@ import {
   changePaidStatus,
   googleAuth,
   googleAuthCallback,
+  getUserByEmail,
 } from '../controllers/user'
-
+import { authenticateJWT } from '../middleware/authenticateJWT'
 const router = Router()
 
 router.get('/', getAllUsers)
 
 router.get('/getUserById', getUserById)
+
+router.post('/getUserByEmail', authenticateJWT, getUserByEmail)
 
 router.post('/', createUser)
 

@@ -1,175 +1,3 @@
-// // This is a public sample test API key.
-// // Don’t submit any personally identifiable information in reqs made with this key.
-// // Sign in to see your own test API key embedded in code samples.
-// const stripe = require("stripe")("sk_test_Ou1w6LVt3zmVipDVJsvMeQsc");
-
-// const handleStripeWebhook = async (req, res) => {
-//   return res.send("stripey");
-// };
-
-// const YOUR_DOMAIN = "http://localhost:3001";
-
-// // app.post('/create-checkout-session',
-// const createCheckoutSession = async (req, res) => {
-//   // return res.send("testing"); // delete ltr
-//   const prices = await stripe.prices.list({
-//     lookup_keys: [req.body.lookup_key],
-//     expand: ["data.product"],
-//   });
-//   const session = await stripe.checkout.sessions.create({
-//     billing_address_collection: "auto",
-//     line_items: [
-//       {
-//         price: prices.data[0].id,
-//         // For metered billing, do not pass quantity
-//         quantity: 1,
-//       },
-//     ],
-//     mode: "subscription",
-//     success_url: `${YOUR_DOMAIN}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-//     cancel_url: `${YOUR_DOMAIN}?canceled=true`,
-//   });
-
-//   res.redirect(303, session.url);
-// };
-// const storeItems = new Map([
-//   // in cents
-//   [1, { priceInCents: 200, name: "Project Tracker Premium" }],
-//   // [2, { priceInCents: 15000, name: "Learn CSS Today" }],
-// ]); // router.post("/stripe/webhook", handleStripeWebhook);
-
-// const createCheckoutSession = async (req, res) => {
-//   try {
-//     const clientUrl = "http://localhost:3000/settings";
-//     // Create a checkout session with Stripe
-//     const session = await stripe.checkout.sessions.create({
-//       payment_method_types: ["card"],
-//       // For each item use the id to get it's information
-//       // Take that information and convert it to Stripe's format
-//       line_items: req.body.items.map(({ id, quantity }) => {
-//         const storeItem = storeItems.get(id);
-//         return {
-//           price_data: {
-//             currency: "usd",
-//             product_data: {
-//               name: storeItem.name,
-//             },
-//             unit_amount: storeItem.priceInCents,
-//           },
-//           quantity: quantity,
-//         };
-//       }),
-//       mode: "payment", // can change to recurring?
-//       // Set a success and cancel URL we will send customers to
-//       // These must be full URLs
-//       // In the next section we will setup CLIENT_URL
-
-//       success_url: `${clientUrl}/settings`,
-//       cancel_url: `${clientUrl}/dashboard`,
-//     });
-
-//     res.json({ url: session.url });
-//   } catch (e) {
-//     // If there is an error send it to the client
-//     res.status(500).json({ error: e.message });
-//   }
-// };
-
-// // app.post('/create-portal-session',
-// const createPortalSession = async (req, res) => {
-//   // For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
-//   // Typically this is stored alongside the authenticated user in your database.
-//   const { session_id } = req.body; //*** need session_id in body */
-//   const checkoutSession = await stripe.checkout.sessions.retrieve(session_id);
-
-//   // This is the url to which the customer will be redirected when they are done
-//   // managing their billing with the portal.
-//   const returnUrl = YOUR_DOMAIN;
-
-//   const portalSession = await stripe.billingPortal.sessions.create({
-//     customer: checkoutSession.customer,
-//     return_url: returnUrl,
-//   });
-
-//   res.redirect(303, portalSession.url);
-// };
-
-// // express raw is themiddleware
-// // app.post('/webhook',express.raw({ type: 'application/json' }),
-// const stripeWebhook = (req, res) => {
-//   let event = req.body;
-//   // Replace this endpoint secret with your endpoint's unique secret
-//   // If you are testing with the CLI, find the secret by running 'stripe listen'
-//   // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
-//   // at https://dashboard.stripe.com/webhooks
-//   const endpointSecret =
-//     "whsec_d3a92af39b92e6c69cced204b41122e20e801de8418728b36c05252477fa12e2";
-//   // Only verify the event if you have an endpoint secret defined.
-//   // Otherwise use the basic event deserialized with JSON.parse
-//   if (endpointSecret) {
-//     // Get the signature sent by Stripe
-//     const signature = req.headers["stripe-signature"];
-//     try {
-//       event = stripe.webhooks.constructEvent(
-//         req.body,
-//         signature,
-//         endpointSecret
-//       );
-//     } catch (err) {
-//       console.log(`⚠️  Webhook signature verification failed.`, err.message);
-//       return res.sendStatus(400);
-//     }
-//   }
-//   let subscription;
-//   let status;
-//   // Handle the event
-// switch (event.type) {
-//   case "customer.subscription.trial_will_end":
-//     subscription = event.data.object;
-//     status = subscription.status;
-//     console.log(`Subscription status is ${status}.`);
-//     // Then define and call a method to handle the subscription trial ending.
-//     // handleSubscriptionTrialEnding(subscription);
-//     break;
-//   case "customer.subscription.deleted":
-//     subscription = event.data.object;
-//     status = subscription.status;
-//     console.log(`Subscription status is ${status}.`);
-//     // Then define and call a method to handle the subscription deleted.
-//     // handleSubscriptionDeleted(subscriptionDeleted);
-//     break;
-//   case "customer.subscription.created":
-//     subscription = event.data.object;
-//     status = subscription.status;
-//     console.log(`Subscription status is ${status}.`);
-//     // Then define and call a method to handle the subscription created.
-//     // handleSubscriptionCreated(subscription);
-//     break;
-//   case "customer.subscription.updated":
-//     subscription = event.data.object;
-//     status = subscription.status;
-//     console.log(`Subscription status is ${status}.`);
-//     // Then define and call a method to handle the subscription update.
-//     // handleSubscriptionUpdated(subscription);
-//     break;
-//   default:
-//     // Unexpected event type
-//     console.log(`Unhandled event type ${event.type}.`);
-// }
-//   // Return a 200 res to acknowledge receipt of the event
-//   res.send();
-// };
-
-// //
-
-// export {
-//   handleStripeWebhook,
-//   createCheckoutSession,
-//   createPortalSession,
-//   stripeWebhook,
-// };
-
-// refactor in the future
 require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 import models from '../../models'
@@ -203,12 +31,9 @@ const findUserByStripeId = async (id) => {
 }
 
 const createCheckoutSession = async (req, res) => {
-  console.log(process.env.STRIPE_SECRET_KEY)
   const YOUR_DOMAIN = 'http://localhost:3000'
   // how do i get customerID in here?
-  console.log(req.email)
   const user = await findUserByEmail(req.email)
-  console.log(user)
   const session = await stripe.checkout.sessions.create({
     customer: user.stripeId,
     billing_address_collection: 'auto',
@@ -227,7 +52,32 @@ const createCheckoutSession = async (req, res) => {
   return res.json({ url: session.url })
 }
 
-const createPortalSession = async (req, res) => {}
+// allows user to manage their billing
+const createPortalSession = async (req, res) => {
+  // For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
+  // Typically this is stored alongside the authenticated user in your database.
+  let user = await findUserByEmail(req.email)
+  //might not be stripeId. maybe it is the literal session when created during create subscription?
+  // const checkoutSession = await stripe.checkout.sessions.retrieve(user.stripeId)
+  // this is the actual checkout session. Think this was created in an event? Think means need to add this to user entity too??
+  // maybe liten to checkoutsession completed event in webhook? TBC not sure howit works
+  const checkoutSession = await stripe.checkout.sessions.retrieve(
+    // 'cs_test_a1Kcu6wvE4UhzJEBzCoN4cAMqAdag2ZandpMf4ngnZqmvyBmbyrH5O09DB',
+    user.stripeCheckoutSession,
+  )
+
+  // This is the url to which the customer will be redirected when they are done
+  // managing their billing with the portal.
+  const returnUrl = 'http://localhost:3000/settings'
+
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer: checkoutSession.customer,
+    return_url: returnUrl,
+  })
+
+  return res.json({ url: portalSession.url })
+  // res.redirect(303, portalSession.url)
+}
 
 const stripeWebhook = (request, response) => {
   const sig = request.headers['stripe-signature']
@@ -240,9 +90,7 @@ const stripeWebhook = (request, response) => {
 
   try {
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret)
-    // console.log(event)
   } catch (err) {
-    console.log('an error...')
     console.log(err)
     response.status(400).send(`Webhook Error: ${err.message}`)
     return
@@ -253,14 +101,13 @@ const stripeWebhook = (request, response) => {
     case 'customer.subscription.trial_will_end':
       subscription = event.data.object
       status = subscription.status
-      console.log(`Subscription status is ${status}.`)
       // Then define and call a method to handle the subscription trial ending.
       // handleSubscriptionTrialEnding(subscription);
       break
     case 'customer.subscription.deleted':
       subscription = event.data.object
       status = subscription.status
-      console.log(`Subscription status is ${status}.`)
+
       // Then define and call a method to handle the subscription deleted.
       // handleSubscriptionDeleted(subscriptionDeleted);
       break
@@ -269,7 +116,7 @@ const stripeWebhook = (request, response) => {
     case 'customer.subscription.created':
       subscription = event.data.object
       status = subscription.status
-      console.log(`Subscription status is ${status}.`)
+
       // Then define and call a method to handle the subscription created.
       // handleSubscriptionCreated(subscription);
       break
@@ -278,13 +125,11 @@ const stripeWebhook = (request, response) => {
     case 'customer.subscription.updated':
       subscription = event.data.object
       status = subscription.status
-      console.log(`Subscription status is ${status}.`)
-      console.log('***** LOOOK HERE*****')
-      console.log(event)
-      console.log('***** LOOOK HERE*****')
-      console.log(event.data.object.plan)
-      // Then define and call a method to handle the subscription update.
+
       handleSubscriptionUpdated(subscription)
+      break
+    case 'checkout.session.completed':
+      handleCheckoutSessionComplete(event.data.object)
       break
     default:
       // Unexpected event type
@@ -296,6 +141,11 @@ const stripeWebhook = (request, response) => {
 }
 
 // pass event.data.object here
+const handleCheckoutSessionComplete = async (d) => {
+  let user = await findUserByStripeId(d.customer)
+  user.stripeCheckoutSession = d.id
+  await user.save()
+}
 const handleSubscriptionUpdated = async (d) => {
   let user = await findUserByStripeId(d.customer)
   if (!user.isPremium) {
@@ -308,7 +158,6 @@ const handleSubscriptionUpdated = async (d) => {
   // need to *1000 to make it accurate; not sure why... but ok
   user.endDate = new Date(d.current_period_end * 1000)
   await user.save()
-  console.log('User updgraded to premium')
 }
 export { createCheckoutSession, createPortalSession, stripeWebhook }
 

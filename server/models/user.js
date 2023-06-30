@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema(
     },
     plan: {
       type: String,
-      enum: ["none", "monthly", "annual"],
-      default: "none",
+      enum: ['none', 'monthly', 'annual'],
+      default: 'none',
     },
     endDate: {
       type: Date,
@@ -32,6 +32,12 @@ const userSchema = new mongoose.Schema(
     stripeId: {
       type: String,
       require: false, // change to true next time
+      default: '',
+    },
+    stripeCheckoutSession: {
+      type: String,
+      require: false,
+      default: '',
     },
     ownProjects: {
       type: [
@@ -39,7 +45,7 @@ const userSchema = new mongoose.Schema(
           _id: false,
           project: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Project",
+            ref: 'Project',
           },
           locked: {
             type: Boolean,
@@ -49,8 +55,8 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
-);
+  { timestamps: true },
+)
 
-const User = mongoose.model("User", userSchema);
-export default User;
+const User = mongoose.model('User', userSchema)
+export default User

@@ -21,7 +21,6 @@ const Sidebar = (props) => {
       <p
         onClick={() => {
           navigate(`/project/${p._id.toString()}`)
-          console.log(p._id)
         }}
       >
         {p.name}

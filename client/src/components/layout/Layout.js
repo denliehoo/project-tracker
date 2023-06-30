@@ -39,7 +39,6 @@ const Layout = (props) => {
   const apiUrl = process.env.REACT_APP_API_URL
 
   const getProjects = async () => {
-    console.log('api called')
     try {
       setIsLoading(true)
       const token = localStorage.getItem('JWT')
@@ -47,10 +46,22 @@ const Layout = (props) => {
       const headers = {
         Authorization: token,
       }
-      let res = await axios.get(`${apiUrl}/projects`, {
+      const projectRes = await axios.get(`${apiUrl}/projects`, {
         headers,
       })
-      const { owner, editor, email, isPremium } = res.data
+
+      const userRes = await axios.post(
+        `${apiUrl}/users/getUserByEmail`,
+        {
+          email: projectRes.data.email,
+        },
+        {
+          headers,
+        },
+      )
+      // need call the getuserbyemail and put in plan... checkoutsess
+      const { owner, editor, email, isPremium } = projectRes.data
+      const { plan, endDate, stripeId, stripeCheckoutSession } = userRes.data
       setOwnProjects(owner)
       setSharedProjects(editor)
       dispatch(
@@ -59,6 +70,10 @@ const Layout = (props) => {
           owner: owner,
           editor: editor,
           isPremium: isPremium,
+          plan: plan,
+          endDate: endDate,
+          stripeId: stripeId,
+          stripeCheckoutSession: stripeCheckoutSession,
         }),
       )
       setIsLoading(false)
@@ -73,7 +88,6 @@ const Layout = (props) => {
     } else {
       setIsLoading(false)
     }
-    console.log('rerendered')
   }, [pathname, callApi])
   return (
     <div>
