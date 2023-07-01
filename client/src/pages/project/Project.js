@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import axios from 'axios'
+import { apiCallAuth } from '../../api/apiRequest'
 import { useEffect, useState } from 'react'
 import AddTaskModal from './components/AddTaskModal'
 import DeleteTaskModal from './components/DeleteTaskModal'
@@ -65,14 +65,11 @@ const Project = (props) => {
       const headers = {
         Authorization: token,
       }
-      let res = await axios.get(`${apiUrl}/tasks/${projectId}`, {
-        headers,
-      })
+
+      let res = await apiCallAuth('get', `/tasks/${projectId}`)
 
       setTasks(res.data)
-      res = await axios.get(`${apiUrl}/projects/${projectId}`, {
-        headers,
-      })
+      res = await apiCallAuth('get', `/projects/${projectId}`)
       setProjectDetails(res.data)
       console.log(res.data)
       setUpdateProjectDetails({
@@ -109,12 +106,9 @@ const Project = (props) => {
                   console.log(token)
                   console.log(projectId)
                   // put requests must have a body, if got nothing, just put null
-                  const res = await axios.put(
-                    `${apiUrl}/projects/${projectId}/unlockProject`,
-                    null,
-                    {
-                      headers,
-                    },
+                  const res = await apiCallAuth(
+                    'put',
+                    `/projects/${projectId}/unlockProject`,
                   )
                   console.log(res)
 
@@ -159,16 +153,10 @@ const Project = (props) => {
                     console.log(selectedRowDetails)
                     const editTask = async () => {
                       try {
-                        if (!token) throw new Error('JWT Token doesnt exist')
-                        const headers = {
-                          Authorization: token,
-                        }
-                        const res = await axios.put(
-                          `${apiUrl}/tasks/${selectedRow}`,
+                        const res = await apiCallAuth(
+                          'put',
+                          `/tasks/${selectedRow}`,
                           selectedRowDetails,
-                          {
-                            headers,
-                          },
                         )
                         console.log(res)
 
@@ -307,9 +295,15 @@ const Project = (props) => {
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <div>
-              <table>
-                <thead>
+            <div style={{ height: '70vh', overflow: 'auto' }}>
+              <table style={{ width: '100%' }}>
+                <thead
+                  style={{
+                    position: 'sticky',
+                    top: '0',
+                    backgroundColor: '#f2f2f2',
+                  }}
+                >
                   <tr>
                     <th></th>
                     <th>Item</th>

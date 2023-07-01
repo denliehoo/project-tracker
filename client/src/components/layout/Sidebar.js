@@ -1,8 +1,7 @@
 // import classes from "./Sidebar.module.css";
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-
+import { apiCallAuth } from '../../api/apiRequest'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CustomModal from '../UI/CustomModal'
@@ -99,17 +98,10 @@ const Sidebar = (props) => {
                 console.log(addProjectDetails)
                 const addProject = async () => {
                   try {
-                    setIsLoading(true)
-                    if (!token) throw new Error('JWT Token doesnt exist')
-                    const headers = {
-                      Authorization: token,
-                    }
-                    const res = await axios.post(
-                      `${apiUrl}/projects`,
+                    const res = await apiCallAuth(
+                      'post',
+                      '/projects',
                       addProjectDetails,
-                      {
-                        headers,
-                      },
                     )
                     console.log(res)
                     setIsLoading(false)

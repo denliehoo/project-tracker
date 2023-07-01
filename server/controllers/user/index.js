@@ -76,7 +76,15 @@ const login = async (req, res) => {
   if (!isCorrectPassword)
     return res.status(400).json({ error: 'Incorrect Password' })
 
-  const token = jwt.sign({ email: email }, process.env.JWT_KEY)
+  // Set the expiration time for the JWT token (e.g., 1 hour from now)
+  // if want to change the time, change the 3600 (which is 60s * 60 min = 3600s = 1 hr)
+  // const expirationTime = Math.floor(Date.now() / 1000) + 3600; // 1 hour (in seconds)
+  const expirationTime = Math.floor(Date.now() / 1000) + 3600 // 1 hour (in seconds)
+
+  const token = jwt.sign(
+    { email: email, exp: expirationTime },
+    process.env.JWT_KEY,
+  )
   return res.send({ token: token })
 }
 
@@ -164,7 +172,7 @@ const googleAuthCallback = async (req, res, next) => {
 
 const getUserByEmail = async (req, res) => {
   if (req.email !== req.body.email)
-    return res.status(401).json({
+    return res.status(403).json({
       error: 'You are not forbidden to see this as you are not the user',
     })
   let user = await findUserByEmail(req.email)

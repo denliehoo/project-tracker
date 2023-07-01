@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import { useLocation } from 'react-router-dom'
-import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { addUserDetails } from '../../slices/userDetailsSlice'
+import { apiCallAuth } from '../../api/apiRequest'
 
 const layoutStyle = {
   display: 'flex',
@@ -41,24 +41,11 @@ const Layout = (props) => {
   const getProjects = async () => {
     try {
       setIsLoading(true)
-      const token = localStorage.getItem('JWT')
-      if (!token) throw new Error('JWT Token doesnt exist')
-      const headers = {
-        Authorization: token,
-      }
-      const projectRes = await axios.get(`${apiUrl}/projects`, {
-        headers,
-      })
+      const projectRes = await apiCallAuth('get', `/projects`)
 
-      const userRes = await axios.post(
-        `${apiUrl}/users/getUserByEmail`,
-        {
-          email: projectRes.data.email,
-        },
-        {
-          headers,
-        },
-      )
+      const userRes = await apiCallAuth('post', '/users/getUserByEmail', {
+        email: projectRes.data.email,
+      })
       // need call the getuserbyemail and put in plan... checkoutsess
       const { owner, editor, email, isPremium } = projectRes.data
       const { plan, endDate, stripeId, stripeCheckoutSession } = userRes.data

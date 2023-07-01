@@ -1,6 +1,6 @@
 // import classes from "./DeleteTaskModal.module.css";
+import { apiCallAuth } from '../../../api/apiRequest'
 import CustomModal from '../../../components/UI/CustomModal'
-import axios from 'axios'
 import { useState } from 'react'
 
 const DeleteTaskModal = (props) => {
@@ -20,15 +20,8 @@ const DeleteTaskModal = (props) => {
           const deleteTask = async () => {
             setIsLoading(true)
             try {
-              if (!token) throw new Error('JWT Token doesnt exist')
-              const headers = {
-                Authorization: token,
-              }
-              const res = await axios.delete(`${apiUrl}/tasks/${selectedRow}`, {
-                headers,
-              })
+              const res = await apiCallAuth('delete', `/tasks/${selectedRow}`)
               console.log(res)
-
               setIsLoading(false)
               resetState()
 

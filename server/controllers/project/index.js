@@ -31,7 +31,7 @@ const getProjectById = async (req, res) => {
 
   // if not the owner and not editor
   if (project.owner !== req.email && !project.editors.includes(req.email))
-    return res.status(401).json({ error: 'You are forbidden to view this' })
+    return res.status(403).json({ error: 'You are forbidden to view this' })
   return res.send(project)
 }
 
@@ -61,7 +61,7 @@ const updateProject = async (req, res) => {
   let project = await findProjectById(id)
   if (!project) return res.status(404).json({ error: 'Project not found' })
   if (project.owner !== req.email)
-    return res.status(401).json({ error: 'You are forbidden to update this' })
+    return res.status(403).json({ error: 'You are forbidden to update this' })
   // update the project description here
   // definitely need do refactoring here
   // if got many more key values, it will be troublesome to code one by one. Is there another way?
@@ -79,7 +79,7 @@ const deleteProject = async (req, res) => {
   let project = await findProjectById(id)
   if (!project) return res.status(404).json({ error: 'Project not found' })
   if (project.owner !== req.email)
-    return res.status(401).json({ error: 'You are forbidden to delete this' })
+    return res.status(403).json({ error: 'You are forbidden to delete this' })
 
   let user = await findUserByEmail(req.email)
   // != instead of !== cause type isnt strictly the same; input it text and type
@@ -97,7 +97,7 @@ const editSharing = async (req, res) => {
   let project = await findProjectById(id)
   if (!project) return res.status(404).json({ error: 'Project not found' })
   if (project.owner !== req.email)
-    return res.status(401).json({ error: 'You are forbidden to edit this' })
+    return res.status(403).json({ error: 'You are forbidden to edit this' })
 
   let result = {
     isAddSelf: false, // if user tries to share with themself
@@ -140,7 +140,7 @@ const deleteSharing = async (req, res) => {
   let project = await findProjectById(id)
   if (!project) return res.status(404).json({ error: 'Project not found' })
   if (project.owner !== req.email)
-    return res.status(401).json({ error: 'You are forbidden to edit this' })
+    return res.status(403).json({ error: 'You are forbidden to edit this' })
 
   let result = {
     isRemoveSelf: false, // if user tries to share with themself
@@ -180,7 +180,7 @@ const changeLockedProject = async (req, res) => {
   let user = await findUserByEmail(email)
   if (user.isPremium)
     return res
-      .status(401)
+      .status(403)
       .json({ error: 'Only free users have to unlock projects' })
   let userIsOwner = false
   for (let p of user.ownProjects) {

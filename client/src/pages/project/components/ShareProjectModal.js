@@ -1,24 +1,30 @@
 // import classes from "./ShareProjectModal.module.css";
-import CustomModal from "../../../components/UI/CustomModal";
-import axios from "axios";
-import { useState } from "react";
+import { apiCallAuth } from '../../../api/apiRequest'
+import CustomModal from '../../../components/UI/CustomModal'
+import { useState } from 'react'
 
 const ShareProjectModal = (props) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [emails, setEmails] = useState("");
-  const [emailToDelete, setEmailToDelete] = useState("");
-  const [error, setError] = useState("");
-  const { token, apiUrl, projectId, resetState, getTasks, projectDetails } =
-    props;
+  const [isLoading, setIsLoading] = useState(false)
+  const [emails, setEmails] = useState('')
+  const [emailToDelete, setEmailToDelete] = useState('')
+  const [error, setError] = useState('')
+  const {
+    token,
+    apiUrl,
+    projectId,
+    resetState,
+    getTasks,
+    projectDetails,
+  } = props
 
   return (
     <CustomModal
       open={props.open}
       onClose={() => {
-        props.onClose();
-        setEmailToDelete("");
-        setEmails("");
-        setError("");
+        props.onClose()
+        setEmailToDelete('')
+        setEmails('')
+        setError('')
       }}
       isLoading={isLoading}
     >
@@ -28,12 +34,12 @@ const ShareProjectModal = (props) => {
         <div>
           <span
             onClick={() => {
-              setEmailToDelete(e);
-              console.log(`atempt to remove ${e}`);
+              setEmailToDelete(e)
+              console.log(`atempt to remove ${e}`)
             }}
           >
             x
-          </span>{" "}
+          </span>{' '}
           {e}
         </div>
       ))}
@@ -42,9 +48,9 @@ const ShareProjectModal = (props) => {
           Email:
           <input
             type="text"
-            value={emails || ""}
+            value={emails || ''}
             onChange={(event) => {
-              setEmails(event.target.value);
+              setEmails(event.target.value)
             }}
           />
         </label>
@@ -52,34 +58,27 @@ const ShareProjectModal = (props) => {
         <div>
           <button
             onClick={() => {
-              setIsLoading(true);
+              setIsLoading(true)
 
               const shareProject = async () => {
                 try {
-                  if (!token) throw new Error("JWT Token doesnt exist");
-                  const headers = {
-                    Authorization: token,
-                  };
-
-                  const res = await axios.put(
-                    `${apiUrl}/projects/${projectId}/sharing`,
+                  const res = await apiCallAuth(
+                    'put',
+                    `/projects/${projectId}/sharing`,
                     { email: [emails] },
-                    {
-                      headers,
-                    }
-                  );
-                  console.log(res);
+                  )
+                  console.log(res)
 
-                  setIsLoading(false);
+                  setIsLoading(false)
                   //   resetState()
 
-                  await getTasks();
+                  await getTasks()
                 } catch (err) {
-                  setIsLoading(false);
-                  console.log(err);
+                  setIsLoading(false)
+                  console.log(err)
                 }
-              };
-              shareProject();
+              }
+              shareProject()
             }}
           >
             Confirm Share Project
@@ -87,39 +86,33 @@ const ShareProjectModal = (props) => {
           {emailToDelete && (
             <button
               onClick={() => {
-                setIsLoading(true);
-                console.log(projectId);
-                console.log(emailToDelete);
+                setIsLoading(true)
+                console.log(projectId)
+                console.log(emailToDelete)
 
                 const deleteShare = async () => {
                   try {
-                    if (!token) throw new Error("JWT Token doesnt exist");
-                    const headers = {
-                      Authorization: token,
-                    };
                     // it could be that if you want to use .delete and send data that it follows a slightly
                     // different pattern from the normal post and get etc
-                    const res = await axios.delete(
-                      `${apiUrl}/projects/${projectId}/sharing`,
+                    const res = await apiCallAuth(
+                      'delete',
+                      `/projects/${projectId}/sharing`,
                       {
-                        headers: headers,
-                        data: {
-                          email: [emailToDelete],
-                        },
-                      }
-                    );
-                    console.log(res);
-                    setEmailToDelete("");
-                    setIsLoading(false);
+                        email: [emailToDelete],
+                      },
+                    )
+                    console.log(res)
+                    setEmailToDelete('')
+                    setIsLoading(false)
                     //   resetState()
 
-                    await getTasks();
+                    await getTasks()
                   } catch (err) {
-                    setIsLoading(false);
-                    console.log(err);
+                    setIsLoading(false)
+                    console.log(err)
                   }
-                };
-                deleteShare();
+                }
+                deleteShare()
               }}
             >
               Confirm Delete
@@ -129,7 +122,7 @@ const ShareProjectModal = (props) => {
         </div>
       </div>
     </CustomModal>
-  );
-};
+  )
+}
 
-export default ShareProjectModal;
+export default ShareProjectModal

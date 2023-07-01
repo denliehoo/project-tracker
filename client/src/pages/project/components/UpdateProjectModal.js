@@ -1,6 +1,6 @@
 // import classes from "./UpdateProjectModal.module.css";
+import { apiCallAuth } from '../../../api/apiRequest'
 import CustomModal from '../../../components/UI/CustomModal'
-import axios from 'axios'
 import { useState } from 'react'
 
 const UpdateProjectModal = (props) => {
@@ -61,17 +61,10 @@ const UpdateProjectModal = (props) => {
 
               const updateProject = async () => {
                 try {
-                  if (!token) throw new Error('JWT Token doesnt exist')
-                  const headers = {
-                    Authorization: token,
-                  }
-
-                  const res = await axios.put(
-                    `${apiUrl}/projects/${projectId}`,
+                  const res = await apiCallAuth(
+                    'put',
+                    `/projects/${projectId}`,
                     { ...updateProjectDetails },
-                    {
-                      headers,
-                    },
                   )
                   console.log(res)
 

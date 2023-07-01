@@ -1,6 +1,6 @@
 // import classes from "./AddTaskModal.module.css";
+import { apiCallAuth } from '../../../api/apiRequest'
 import CustomModal from '../../../components/UI/CustomModal'
-import axios from 'axios'
 import { useState } from 'react'
 
 const AddTaskModal = (props) => {
@@ -64,17 +64,10 @@ const AddTaskModal = (props) => {
               setIsLoading(true)
               const addTask = async () => {
                 try {
-                  if (!token) throw new Error('JWT Token doesnt exist')
-                  const headers = {
-                    Authorization: token,
-                  }
-                  const res = await axios.post(
-                    `${apiUrl}/tasks`,
-                    { ...addTaskDetails, project: projectId },
-                    {
-                      headers,
-                    },
-                  )
+                  const res = await apiCallAuth('post', '/tasks', {
+                    ...addTaskDetails,
+                    project: projectId,
+                  })
                   console.log(res)
 
                   setIsLoading(false)

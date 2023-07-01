@@ -1,22 +1,21 @@
 # To do
-- [Client] Sorting for Tasks
-- [Server + Client] Session for login
-- [Server] Place a timer on the JWT Token (e.g. maybe valid for 30 minutes ok)
 - [Server + Client] Add OAuth (Gmail only first) as authentication
+- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
+- [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
+- [Client + Server] Sorting / Pagination For Task
+- [Client] work more on basic structure of share project and unlock
+    - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
+    - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
 - [Client] Ensure proper error handling done
 - [Client] Basic styling using MUI
 
 - TBC... sometime in the future...
-- [Server + Frontend] Set up crypto payments for recurring payments premium tier
-    - Create a smart contract to handle to recurring payments. The idea is: user sets allowance for ERC20 token > a server calls the smart contract every 1 month > the function called reduces the ERC20 balance directly from their wallet (try this out first) > upon success, server calls API to backend to change status to paid, if fail, change status to free
-- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
-- [Client] work more on basic structure of share project and unlock
-    - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
-    - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
 - [Server] Add auth for User routes for admin only
-- [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Server] Enable choosing of either read only or view only for sharing
 - [Server] Once deployed, get a proper webhook from stripe and get the according keys and place it in the code (payments controller). This is because currently, webhook is only done in local env
+- [Server + Frontend] Set up crypto payments for recurring payments premium tier
+    - Need to complete next project first before this is implemented
+    - Create a smart contract to handle to recurring payments. The idea is: user sets allowance for ERC20 token > a server calls the smart contract every 1 month > the function called reduces the ERC20 balance directly from their wallet (try this out first) > upon success, server calls API to backend to change status to paid, if fail, change status to free
 
 
 # Done
@@ -61,3 +60,7 @@
 - 30/06/23: [Client + Server] Enabled stripe for recurring payments. User becomes premium upon confirmation of payment from the webhook stripe sends. Changed User Entity accordingly to include stripeId, plan details and end date for subscription
 - 30/06/23: [Server + Frontend] allow clients to handle their subscriptions in stripe
 - 30/06/23: [Server + Frontend] need to ensure that if the current date has passed the subscription enddate (as can be seen in User entity) that it automatically changes the plan to none and isPremium to false. Can maybe do this at the start when we get client details in the Layout.js 
+- 01/07/23: [Server + Client] Session for login
+    - JWT Token only valid for 1 hour. (can change in the login user controller if want)
+    - User gets redirected to login page if JWT token expires or no JWT token
+    - Refactored API data required auth

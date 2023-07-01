@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { apiCallAuth } from '../../api/apiRequest'
 
 function LoginForm() {
   const [username, setUsername] = useState('')
@@ -25,7 +25,7 @@ function LoginForm() {
 
     if (isLogin) {
       try {
-        const res = await axios.post('http://localhost:3001/users/login', {
+        const res = await apiCallAuth('post', '/users/login', {
           email: username,
           password: password,
         })
@@ -43,7 +43,7 @@ function LoginForm() {
     } else {
       // register
       try {
-        const res = await axios.post('http://localhost:3001/users/', {
+        const res = await apiCallAuth('post', '/users/', {
           email: username,
           password: password,
         })

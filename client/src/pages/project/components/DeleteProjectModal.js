@@ -1,8 +1,8 @@
 // import classes from "./DeleteProjectModal.module.css";
 import CustomModal from '../../../components/UI/CustomModal'
-import axios from 'axios'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiCallAuth } from '../../../api/apiRequest'
 
 const DeleteProjectModal = (props) => {
   const navigate = useNavigate()
@@ -22,16 +22,7 @@ const DeleteProjectModal = (props) => {
           const deleteProject = async () => {
             setIsLoading(true)
             try {
-              if (!token) throw new Error('JWT Token doesnt exist')
-              const headers = {
-                Authorization: token,
-              }
-              const res = await axios.delete(
-                `${apiUrl}/projects/${projectId}`,
-                {
-                  headers,
-                },
-              )
+              const res = await apiCallAuth('delete', `/projects/${projectId}`)
               console.log(res)
 
               setIsLoading(false)
