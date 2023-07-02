@@ -1,5 +1,4 @@
 # To do
-- [Client + Server] Pagination For Task
 - [Client] work more on basic structure of share project and unlock
     - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
     - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
@@ -66,3 +65,5 @@
     - Refactored API data required auth
 - 02/07/23: [Server + Client] Add OAuth (Gmail only first) as authentication
 - 02/07/23: [Client + Server] Sorting For Task
+- 02/07/23: [Client + Server] Pagination For Task
+

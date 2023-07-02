@@ -24,20 +24,27 @@ const getAllTasksForProject = async (req, res) => {
     return res.status(403).json({ error: 'Project has been locked' })
 
   try {
-    const { sortBy, sortOrder } = req.query
-    console.log(sortBy)
-    console.log(sortOrder)
+    const { sortBy, sortOrder, page, limit } = req.query
+    console.log(page)
+    console.log(limit)
     const sortOptions = {}
     if (sortBy && sortOrder) {
       sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1
     }
+
+    const tasksCount = await Task.countDocuments({ project: id })
+    const totalPageCount = Math.ceil(tasksCount / limit)
+
     const tasks = await Task.find({ project: id })
       .populate('project')
       .sort(sortOptions)
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
 
     // const tasks = await Task.find({ project: id }).populate('project')
     // console.log(tasks)
-    return res.json(tasks)
+    // return res.json(tasks)
+    return res.json({ tasks, totalPageCount, totalTasks: tasksCount })
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch tasks' })
   }

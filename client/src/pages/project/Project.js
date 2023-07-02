@@ -40,6 +40,15 @@ const Project = (props) => {
   const userDetails = useSelector((state) => state.userDetails)
   const isOwner = userDetails.owner.some((p) => p._id === projectId)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPageCount, setTotalPageCount] = useState(1)
+  const [totalTasks, setTotalTasks] = useState(0)
+  const [limit, setLimit] = useState(10) // Default limit is 10
+  // const limit = 10
+  const handleLimitChange = (event) => {
+    setLimit(Number(event.target.value))
+  }
+
   const handleCheckboxChange = (rowId) => {
     setError('')
     setSelectedRow(rowId)
@@ -60,25 +69,24 @@ const Project = (props) => {
     setIsForbidden(false)
     setSortBy('updatedAt')
     setSortOrder('desc')
+    setTotalPageCount(1)
+    setCurrentPage(1)
+    setTotalTasks(0)
+    setLimit(10)
   }
   const getTasks = async () => {
     setIsLoading(true)
     try {
       let res
-      console.log(sortBy)
-      console.log(sortOrder)
-      if (sortBy && sortOrder) {
-        res = await apiCallAuth(
-          'get',
-          `/tasks/${projectId}?sortBy=${sortBy}&sortOrder=${sortOrder}`,
-        )
-      } else {
-        res = await apiCallAuth('get', `/tasks/${projectId}`)
-      }
-      setTasks(res.data)
+      res = await apiCallAuth(
+        'get',
+        `/tasks/${projectId}?sortBy=${sortBy}&sortOrder=${sortOrder}&page=${currentPage}&limit=${limit}`,
+      )
+      setTasks(res.data.tasks)
+      setTotalPageCount(res.data.totalPageCount)
+      setTotalTasks(res.data.totalTasks)
       res = await apiCallAuth('get', `/projects/${projectId}`)
       setProjectDetails(res.data)
-      // console.log(res.data)
       setUpdateProjectDetails({
         name: res.data.name,
         description: res.data.description,
@@ -103,12 +111,18 @@ const Project = (props) => {
     await getTasks()
   }
 
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPageCount))
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+  }
+
   useEffect(() => {
-    console.log('get tasks')
     getTasks()
-  }, [projectId, sortBy, sortOrder])
+  }, [projectId, sortBy, sortOrder, currentPage, limit])
   useEffect(() => {
-    console.log('resetState')
     resetState()
   }, [projectId])
 
@@ -121,13 +135,11 @@ const Project = (props) => {
             onClick={() => {
               const unlockProject = async () => {
                 try {
-                  console.log(projectId)
                   // put requests must have a body, if got nothing, just put null
                   const res = await apiCallAuth(
                     'put',
                     `/projects/${projectId}/unlockProject`,
                   )
-                  console.log(res)
 
                   setIsLoading(false)
                   resetState()
@@ -166,8 +178,6 @@ const Project = (props) => {
                   if (isEdit) {
                     // save task
                     setIsEdit(false)
-                    console.log(selectedRow)
-                    console.log(selectedRowDetails)
                     const editTask = async () => {
                       try {
                         const res = await apiCallAuth(
@@ -175,7 +185,6 @@ const Project = (props) => {
                           `/tasks/${selectedRow}`,
                           selectedRowDetails,
                         )
-                        console.log(res)
 
                         setIsLoading(false)
                         resetState()
@@ -194,7 +203,6 @@ const Project = (props) => {
               {/* add task button */}
               <button
                 onClick={() => {
-                  console.log('add task!')
                   setIsAddTask(!isAddTask)
                 }}
               >
@@ -203,7 +211,6 @@ const Project = (props) => {
               {/* delete task button */}
               <button
                 onClick={() => {
-                  console.log('attempt delete task!')
                   if (!selectedRow)
                     return setError('Please select a row to delete')
                   setIsConfirmDelete(true)
@@ -302,123 +309,165 @@ const Project = (props) => {
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <div style={{ height: '70vh', overflow: 'auto' }}>
-              <table style={{ width: '100%' }}>
-                <thead
-                  style={{
-                    position: 'sticky',
-                    top: '0',
-                    backgroundColor: '#f2f2f2',
-                  }}
+            <div>
+              <div style={{ height: '70vh', overflow: 'auto' }}>
+                <table style={{ width: '100%' }}>
+                  <thead
+                    style={{
+                      position: 'sticky',
+                      top: '0',
+                      backgroundColor: '#f2f2f2',
+                    }}
+                  >
+                    <tr>
+                      <th></th>
+                      {[
+                        'item',
+                        'nextAction',
+                        'priority',
+                        'createdAt',
+                        'updatedAt',
+                      ].map((h) => (
+                        <th
+                          onClick={() => handleSort(h)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {h
+                            .split(/(?=[A-Z])/)
+                            .map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1),
+                            )
+                            .join(' ')}{' '}
+                          {sortBy === h && (sortOrder === 'asc' ? '^' : 'v')}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tasks.length > 0 ? (
+                      tasks.map((t) => (
+                        <tr key={t._id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedRow === t._id}
+                              onChange={() => {
+                                handleCheckboxChange(t._id)
+                                setSelectedRowDetails({
+                                  item: t.item,
+                                  nextAction: t.nextAction,
+                                  priority: t.priority,
+                                })
+                              }}
+                            />
+                          </td>
+                          <td>
+                            {isEdit && t._id === selectedRow ? (
+                              <input
+                                type="text"
+                                value={selectedRowDetails.item}
+                                onChange={(event) => {
+                                  setSelectedRowDetails({
+                                    ...selectedRowDetails,
+                                    item: event.target.value,
+                                  })
+                                }}
+                              />
+                            ) : (
+                              t.item
+                            )}
+                          </td>
+                          <td>
+                            {isEdit && t._id === selectedRow ? (
+                              <input
+                                type="text"
+                                value={selectedRowDetails.nextAction}
+                                onChange={(event) => {
+                                  setSelectedRowDetails({
+                                    ...selectedRowDetails,
+                                    nextAction: event.target.value,
+                                  })
+                                }}
+                              />
+                            ) : (
+                              <span
+                                onClick={() => {
+                                  setNextActionHistoryItem(t.item)
+                                  setNextActionHistory(t.nextActionHistory)
+                                }}
+                              >
+                                {t.nextAction}
+                              </span>
+                            )}
+                          </td>
+                          <td>
+                            {isEdit && t._id === selectedRow ? (
+                              <input
+                                type="number"
+                                value={selectedRowDetails.priority}
+                                onChange={(event) => {
+                                  setSelectedRowDetails({
+                                    ...selectedRowDetails,
+                                    priority: event.target.value,
+                                  })
+                                }}
+                              />
+                            ) : (
+                              t.priority
+                            )}
+                          </td>
+                          <td>{t.createdAt}</td>
+                          <td>{t.updatedAt}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <div>You have no tasks!</div>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination*/}
+              <div>
+                {limit === 0 ? (
+                  <span>Viewing all tasks</span>
+                ) : (
+                  <span>
+                    Viewing task {(currentPage - 1) * limit + 1} to{' '}
+                    {currentPage * limit > totalTasks
+                      ? totalTasks
+                      : currentPage * limit}{' '}
+                    out of {totalTasks}
+                  </span>
+                )}
+
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
                 >
-                  <tr>
-                    <th></th>
-                    {[
-                      'item',
-                      'nextAction',
-                      'priority',
-                      'createdAt',
-                      'updatedAt',
-                    ].map((h) => (
-                      <th
-                        onClick={() => handleSort(h)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {h
-                          .split(/(?=[A-Z])/)
-                          .map(
-                            (word) =>
-                              word.charAt(0).toUpperCase() + word.slice(1),
-                          )
-                          .join(' ')}{' '}
-                        {sortBy === h && (sortOrder === 'asc' ? '^' : 'v')}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tasks.length > 0 ? (
-                    tasks.map((t) => (
-                      <tr key={t._id}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedRow === t._id}
-                            onChange={() => {
-                              handleCheckboxChange(t._id)
-                              setSelectedRowDetails({
-                                item: t.item,
-                                nextAction: t.nextAction,
-                                priority: t.priority,
-                              })
-                            }}
-                          />
-                        </td>
-                        <td>
-                          {isEdit && t._id === selectedRow ? (
-                            <input
-                              type="text"
-                              value={selectedRowDetails.item}
-                              onChange={(event) => {
-                                setSelectedRowDetails({
-                                  ...selectedRowDetails,
-                                  item: event.target.value,
-                                })
-                              }}
-                            />
-                          ) : (
-                            t.item
-                          )}
-                        </td>
-                        <td>
-                          {isEdit && t._id === selectedRow ? (
-                            <input
-                              type="text"
-                              value={selectedRowDetails.nextAction}
-                              onChange={(event) => {
-                                setSelectedRowDetails({
-                                  ...selectedRowDetails,
-                                  nextAction: event.target.value,
-                                })
-                              }}
-                            />
-                          ) : (
-                            <span
-                              onClick={() => {
-                                console.log(t.nextActionHistory)
-                                setNextActionHistoryItem(t.item)
-                                setNextActionHistory(t.nextActionHistory)
-                              }}
-                            >
-                              {t.nextAction}
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          {isEdit && t._id === selectedRow ? (
-                            <input
-                              type="number"
-                              value={selectedRowDetails.priority}
-                              onChange={(event) => {
-                                setSelectedRowDetails({
-                                  ...selectedRowDetails,
-                                  priority: event.target.value,
-                                })
-                              }}
-                            />
-                          ) : (
-                            t.priority
-                          )}
-                        </td>
-                        <td>{t.createdAt}</td>
-                        <td>{t.updatedAt}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <div>You have no tasks!</div>
-                  )}
-                </tbody>
-              </table>
+                  Previous
+                </button>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPageCount}
+                >
+                  Next
+                </button>
+              </div>
+              {/* Page limit */}
+              <div>
+                <label htmlFor="limitSelect">Tasks per page:</label>
+                <select
+                  id="limitSelect"
+                  value={limit}
+                  onChange={handleLimitChange}
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="0">All</option>
+                </select>
+              </div>
             </div>
           )}
         </div>
