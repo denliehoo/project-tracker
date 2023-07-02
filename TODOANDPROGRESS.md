@@ -1,5 +1,5 @@
 # To do
-- [Server + Client] Add OAuth (Gmail only first) as authentication
+- [Server + Client] Add google authenticator for 2FA
 - [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Client + Server] Sorting / Pagination For Task
@@ -64,3 +64,4 @@
     - JWT Token only valid for 1 hour. (can change in the login user controller if want)
     - User gets redirected to login page if JWT token expires or no JWT token
     - Refactored API data required auth
+- 02/07/23: [Server + Client] Add OAuth (Gmail only first) as authentication

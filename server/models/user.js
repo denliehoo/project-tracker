@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    googleId: {
+      type: String,
+      require: false,
+      default: '',
+    },
     stripeId: {
       type: String,
       require: false, // change to true next time

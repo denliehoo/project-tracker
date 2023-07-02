@@ -36,7 +36,6 @@ const Layout = (props) => {
   const [sharedProject, setSharedProjects] = useState([])
   const [callApi, setCallApi] = useState(true)
   const dispatch = useDispatch()
-  const apiUrl = process.env.REACT_APP_API_URL
 
   const getProjects = async () => {
     try {

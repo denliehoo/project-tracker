@@ -9,8 +9,6 @@ import UpdateProjectModal from './components/UpdateProjectModal'
 import DeleteProjectModal from './components/DeleteProjectModal'
 import ShareProjectModal from './components/ShareProjectModal'
 
-const apiUrl = process.env.REACT_APP_API_URL
-
 const Project = (props) => {
   const { projectId } = useParams()
   const [isLoading, setIsLoading] = useState(true)
@@ -39,7 +37,6 @@ const Project = (props) => {
   const userDetails = useSelector((state) => state.userDetails)
   const isOwner = userDetails.owner.some((p) => p._id === projectId)
 
-  const token = localStorage.getItem('JWT')
   const handleCheckboxChange = (rowId) => {
     setError('')
     setSelectedRow(rowId)
@@ -61,11 +58,6 @@ const Project = (props) => {
   }
   const getTasks = async () => {
     try {
-      if (!token) throw new Error('JWT Token doesnt exist')
-      const headers = {
-        Authorization: token,
-      }
-
       let res = await apiCallAuth('get', `/tasks/${projectId}`)
 
       setTasks(res.data)
@@ -99,11 +91,6 @@ const Project = (props) => {
             onClick={() => {
               const unlockProject = async () => {
                 try {
-                  if (!token) throw new Error('JWT Token doesnt exist')
-                  const headers = {
-                    Authorization: token,
-                  }
-                  console.log(token)
                   console.log(projectId)
                   // put requests must have a body, if got nothing, just put null
                   const res = await apiCallAuth(
@@ -215,8 +202,6 @@ const Project = (props) => {
           <ShareProjectModal
             open={isShareProject}
             onClose={() => setIsShareProject(false)}
-            token={token}
-            apiUrl={apiUrl}
             projectDetails={projectDetails}
             projectId={projectId}
             resetState={resetState}
@@ -227,8 +212,6 @@ const Project = (props) => {
           <DeleteProjectModal
             open={isDeleteProject}
             onClose={() => setIsDeleteProject(false)}
-            token={token}
-            apiUrl={apiUrl}
             projectName={projectDetails.name}
             projectId={projectId}
             resetState={resetState}
@@ -247,8 +230,6 @@ const Project = (props) => {
             }}
             projectId={projectId}
             projectDetails={projectDetails}
-            token={token}
-            apiUrl={apiUrl}
             resetState={resetState}
             getTasks={getTasks}
             updateProjectDetails={updateProjectDetails}
@@ -259,8 +240,6 @@ const Project = (props) => {
           <DeleteTaskModal
             open={isConfirmDelete}
             onClose={() => setIsConfirmDelete(false)}
-            token={token}
-            apiUrl={apiUrl}
             selectedRow={selectedRow}
             resetState={resetState}
             getTasks={getTasks}
@@ -272,8 +251,6 @@ const Project = (props) => {
             onClose={() => {
               setIsAddTask(false)
             }}
-            token={token}
-            apiUrl={apiUrl}
             projectId={projectId}
             resetState={resetState}
             getTasks={getTasks}

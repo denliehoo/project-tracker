@@ -10,8 +10,6 @@ const Sidebar = (props) => {
   const [isAddProject, setIsAddProject] = useState(false)
   const [addProjectDetails, setAddProjectDetails] = useState({})
   const [isLoading, setIsLoading] = useState(false)
-  const token = localStorage.getItem('JWT')
-  const apiUrl = process.env.REACT_APP_API_URL
 
   const navigate = useNavigate()
   const ProjectItem = (p, index) => (

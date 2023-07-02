@@ -14,7 +14,6 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const { User } = models
 
 const getAllUsers = async (req, res) => {
-  console.log(process.env.GOOGLE_OAUTH_CLIENT_ID)
   const users = await User.find()
   return res.send(users)
 }
@@ -76,15 +75,7 @@ const login = async (req, res) => {
   if (!isCorrectPassword)
     return res.status(400).json({ error: 'Incorrect Password' })
 
-  // Set the expiration time for the JWT token (e.g., 1 hour from now)
-  // if want to change the time, change the 3600 (which is 60s * 60 min = 3600s = 1 hr)
-  // const expirationTime = Math.floor(Date.now() / 1000) + 3600; // 1 hour (in seconds)
-  const expirationTime = Math.floor(Date.now() / 1000) + 3600 // 1 hour (in seconds)
-
-  const token = jwt.sign(
-    { email: email, exp: expirationTime },
-    process.env.JWT_KEY,
-  )
+  const token = generateJWT(email)
   return res.send({ token: token })
 }
 
@@ -122,21 +113,35 @@ const changePaidStatus = async (req, res) => {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: 'REPLACEME',
-      // clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
-      // clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-      clientSecret: 'REPLACEME',
+      clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
       callbackURL: '/users/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       // Add your custom logic to handle the user's profile data
       console.log('User Profile:', profile)
-      console.log(profile.emails[0].value)
-      // const user = await findUserByEmail(profile.emails[0].value)
-      // console.log(user)
-      // Here, you can create or find the user in your database and perform login/registration
-      // For simplicity, we'll just pass the profile data to the callback
-      return done(null, profile)
+      let user = await findUserByEmail(profile.emails[0].value)
+      if (!user) {
+        const stripeCustomer = await stripe.customers.create({
+          email: profile.emails[0].value,
+          description: 'New customer!',
+        })
+
+        const hashedPassword = await hashPassword(
+          'TempUserPasswordForOAuth1234!',
+        )
+
+        user = await User.create({
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          password: hashedPassword,
+          stripeId: stripeCustomer.id,
+          googleId: profile.id,
+        })
+      }
+      const token = generateJWT(user.email)
+
+      return done(null, { profile, token })
     },
   ),
 )
@@ -153,21 +158,33 @@ const googleAuthCallback = async (req, res, next) => {
   passport.authenticate(
     'google',
     { failureRedirect: '/login' },
-    (err, user) => {
-      console.log('****this is user*****')
-      console.log(user)
+    (err, data) => {
+      console.log(data.profile)
+      console.log(data.token)
       if (err) {
         // Handle any error that occurred during authentication
-        console.log('there is an error')
         console.log(err)
         return next(err)
       }
 
-      console.log('redirect time')
       // Successful authentication, redirect to the desired page
-      res.redirect('/dashboard')
+      res.redirect(`http://localhost:3000/login?token=${data.token}`)
     },
   )(req, res, next)
+}
+
+// helper functions
+const generateJWT = (email) => {
+  // Set the expiration time for the JWT token (e.g., 1 hour from now)
+  // if want to change the time, change the 3600 (which is 60s * 60 min = 3600s = 1 hr)
+  // const expirationTime = Math.floor(Date.now() / 1000) + 3600; // 1 hour (in seconds)
+  const expirationTime = Math.floor(Date.now() / 1000) + 3600 // 1 hour (in seconds)
+
+  const token = jwt.sign(
+    { email: email, exp: expirationTime },
+    process.env.JWT_KEY,
+  )
+  return token
 }
 
 const getUserByEmail = async (req, res) => {
@@ -187,7 +204,7 @@ const getUserByEmail = async (req, res) => {
 
   return res.send(user)
 }
-// helper functions
+
 const findUserById = async (id) => {
   try {
     const user = await User.findById(id)

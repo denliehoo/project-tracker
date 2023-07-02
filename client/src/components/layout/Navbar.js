@@ -77,6 +77,16 @@ const Navbar = () => {
           </div>
         </div>
         <div style={linkStyle}>
+          <div
+            onClick={() => {
+              localStorage.removeItem('JWT')
+              navigate('/login')
+            }}
+          >
+            Logout
+          </div>
+        </div>
+        <div style={linkStyle}>
           <div>Profile</div>
         </div>
       </div>

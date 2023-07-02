@@ -8,14 +8,7 @@ const ShareProjectModal = (props) => {
   const [emails, setEmails] = useState('')
   const [emailToDelete, setEmailToDelete] = useState('')
   const [error, setError] = useState('')
-  const {
-    token,
-    apiUrl,
-    projectId,
-    resetState,
-    getTasks,
-    projectDetails,
-  } = props
+  const { projectId, resetState, getTasks, projectDetails } = props
 
   return (
     <CustomModal

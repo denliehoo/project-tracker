@@ -6,8 +6,6 @@ import { useState } from 'react'
 const UpdateProjectModal = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const {
-    token,
-    apiUrl,
     projectId,
     resetState,
     getTasks,

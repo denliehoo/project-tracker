@@ -7,7 +7,7 @@ import { apiCallAuth } from '../../../api/apiRequest'
 const DeleteProjectModal = (props) => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
-  const { token, apiUrl, projectId, resetState, getTasks, projectName } = props
+  const { projectId, resetState, getTasks, projectName } = props
 
   return (
     <CustomModal

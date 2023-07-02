@@ -34,29 +34,6 @@ summary:
 -2FA implementaion using google authenticator...
 -Material UI for styling....
 
-
----
-Google OAuth2.0:
-
-To obtain your Google Client ID and Client Secret for OAuth 2.0 integration with Google, you'll need to create a project in the Google Developer Console and configure the OAuth consent screen. Here's how you can get your credentials:
-
-Go to the Google Developer Console: Visit the Google Developer Console at https://console.developers.google.com/.
-
-Create a new project: Click on the project dropdown menu at the top of the page and select "New Project." Enter a name for your project and click the "Create" button.
-
-Enable the necessary APIs: In the left sidebar, click on "APIs & Services" and then select "Library." Search for "Google+ API" and "Google OAuth 2.0 API," and enable them for your project.
-
-Configure the OAuth consent screen: In the left sidebar, click on "APIs & Services" and select "OAuth consent screen." Choose the user type for your application (Internal or External) and enter the required information such as the application name, authorized domains, and privacy policy URL.
-
-Create OAuth 2.0 credentials: In the left sidebar, click on "APIs & Services" and select "Credentials." Click the "Create Credentials" button and choose "OAuth client ID." Select "Web application" as the application type.
-
-Configure the OAuth client ID: Enter a name for your OAuth client ID. In the "Authorized JavaScript origins" field, enter the URL for your frontend application (e.g., http://localhost:3000). In the "Authorized redirect URIs" field, enter the callback URL for your backend OAuth route (e.g., http://localhost:3001/auth/google/callback). Click the "Create" button.
-
-Obtain your Client ID and Client Secret: Once you have created the OAuth client ID, you will see a popup with your Client ID and Client Secret. These are the credentials you will use in your backend code for OAuth authentication.
-
-Make sure to keep your Client Secret confidential and avoid exposing it in public repositories or client-side code.
-
-Once you have your Google Client ID and Client Secret, you can use them in your backend code when configuring the Google OAuth strategy, as shown in the previous code example.
 ---
 Note when to use 403 and 401?
 401: use when user is just not authorized to do so (e.g. accessing someone else project = 401, unauthorized)

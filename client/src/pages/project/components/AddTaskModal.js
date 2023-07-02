@@ -6,7 +6,7 @@ import { useState } from 'react'
 const AddTaskModal = (props) => {
   const [addTaskDetails, setAddTaskDetails] = useState({})
   const [isLoading, setIsLoading] = useState(false)
-  const { token, apiUrl, projectId, resetState, getTasks } = props
+  const { projectId, resetState, getTasks } = props
 
   return (
     <CustomModal

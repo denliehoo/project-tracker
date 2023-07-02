@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 const DeleteTaskModal = (props) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { token, apiUrl, selectedRow, resetState, getTasks } = props
+  const { selectedRow, resetState, getTasks } = props
 
   return (
     <CustomModal
