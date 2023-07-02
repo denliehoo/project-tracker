@@ -1,7 +1,7 @@
 require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 import models from '../../models'
-const { User } = models
+import { findUserByEmail, findUserByStripeId } from '../../utility/findFromDb'
 
 const productToPriceMap = {
   monthly: 'price_1NOMekEiIAzhG1HpOZme9Ow1',
@@ -10,24 +10,6 @@ const productToPriceMap = {
 const priceToProductMap = {
   price_1NOMekEiIAzhG1HpOZme9Ow1: 'monthly',
   price_1NOMeyEiIAzhG1HpmdYApJtV: 'annual',
-}
-
-const findUserByEmail = async (email) => {
-  try {
-    const user = await User.find({ email: email })
-    return user[0]
-  } catch {
-    return null
-  }
-}
-
-const findUserByStripeId = async (id) => {
-  try {
-    const user = await User.find({ stripeId: id })
-    return user[0]
-  } catch {
-    return null
-  }
 }
 
 const createCheckoutSession = async (req, res) => {

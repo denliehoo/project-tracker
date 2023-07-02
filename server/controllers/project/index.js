@@ -1,5 +1,6 @@
 import models from '../../models'
 const { Project, User, Task } = models
+import { findUserByEmail } from '../../utility/findFromDb'
 
 const getAllProjects = async (req, res) => {
   const email = req.email
@@ -210,15 +211,6 @@ const findProjectById = async (id) => {
   try {
     const project = await Project.findById(id)
     return project
-  } catch {
-    return null
-  }
-}
-
-const findUserByEmail = async (email) => {
-  try {
-    const user = await User.find({ email: email })
-    return user[0]
   } catch {
     return null
   }

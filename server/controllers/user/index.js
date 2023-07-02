@@ -1,5 +1,6 @@
 require('dotenv').config()
 import models from '../../models'
+import { findUserByEmail, findUserById } from '../../utility/findFromDb'
 import {
   comparePasswords,
   hashPassword,
@@ -203,24 +204,6 @@ const getUserByEmail = async (req, res) => {
   }
 
   return res.send(user)
-}
-
-const findUserById = async (id) => {
-  try {
-    const user = await User.findById(id)
-    return user
-  } catch {
-    return null
-  }
-}
-
-const findUserByEmail = async (email) => {
-  try {
-    const user = await User.find({ email: email })
-    return user[0]
-  } catch {
-    return null
-  }
 }
 
 export {

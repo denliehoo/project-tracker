@@ -1,5 +1,4 @@
 # To do
-- [Server + Client] Add google authenticator for 2FA
 - [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
 - [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
 - [Client + Server] Sorting / Pagination For Task
@@ -9,7 +8,8 @@
 - [Client] Ensure proper error handling done
 - [Client] Basic styling using MUI
 
-- TBC... sometime in the future...
+# Low Priority Task
+- [Server + Client] Add google authenticator for 2FA
 - [Server] Add auth for User routes for admin only
 - [Server] Enable choosing of either read only or view only for sharing
 - [Server] Once deployed, get a proper webhook from stripe and get the according keys and place it in the code (payments controller). This is because currently, webhook is only done in local env
