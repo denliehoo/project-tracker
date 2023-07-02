@@ -66,4 +66,4 @@
 - 02/07/23: [Server + Client] Add OAuth (Gmail only first) as authentication
 - 02/07/23: [Client + Server] Sorting For Task
 - 02/07/23: [Client + Server] Pagination For Task
-
+- 02/07/23: [Client] styling of login page
