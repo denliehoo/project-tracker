@@ -1,7 +1,5 @@
 # To do
-- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
-- [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
-- [Client + Server] Sorting / Pagination For Task
+- [Client + Server] Pagination For Task
 - [Client] work more on basic structure of share project and unlock
     - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
     - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
@@ -10,6 +8,8 @@
 
 # Low Priority Task
 - [Server + Client] Add google authenticator for 2FA
+- [Server] Extend functionality Task entity to include custom tasks (i.e. custom columns)
+- [Server] Refactor common authorization validation (e.g. if they own the project/task) into a middleware instead of copy pasting throughout app. maybe put relevant stuff (e.g. the user itself) into req (like how we placed the email) so that we can reduce finding details for the user everytime
 - [Server] Add auth for User routes for admin only
 - [Server] Enable choosing of either read only or view only for sharing
 - [Server] Once deployed, get a proper webhook from stripe and get the according keys and place it in the code (payments controller). This is because currently, webhook is only done in local env
@@ -65,3 +65,4 @@
     - User gets redirected to login page if JWT token expires or no JWT token
     - Refactored API data required auth
 - 02/07/23: [Server + Client] Add OAuth (Gmail only first) as authentication
+- 02/07/23: [Client + Server] Sorting For Task

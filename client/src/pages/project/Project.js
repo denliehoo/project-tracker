@@ -32,6 +32,9 @@ const Project = (props) => {
 
   const [updateProjectDetails, setUpdateProjectDetails] = useState({})
 
+  const [sortBy, setSortBy] = useState('updatedAt') // Default sorting field
+  const [sortOrder, setSortOrder] = useState('desc') // Default sorting order
+
   const [isForbidden, setIsForbidden] = useState(false)
 
   const userDetails = useSelector((state) => state.userDetails)
@@ -55,15 +58,27 @@ const Project = (props) => {
     setNextActionHistory([])
     setNextActionHistoryItem('')
     setIsForbidden(false)
+    setSortBy('updatedAt')
+    setSortOrder('desc')
   }
   const getTasks = async () => {
+    setIsLoading(true)
     try {
-      let res = await apiCallAuth('get', `/tasks/${projectId}`)
-
+      let res
+      console.log(sortBy)
+      console.log(sortOrder)
+      if (sortBy && sortOrder) {
+        res = await apiCallAuth(
+          'get',
+          `/tasks/${projectId}?sortBy=${sortBy}&sortOrder=${sortOrder}`,
+        )
+      } else {
+        res = await apiCallAuth('get', `/tasks/${projectId}`)
+      }
       setTasks(res.data)
       res = await apiCallAuth('get', `/projects/${projectId}`)
       setProjectDetails(res.data)
-      console.log(res.data)
+      // console.log(res.data)
       setUpdateProjectDetails({
         name: res.data.name,
         description: res.data.description,
@@ -76,9 +91,24 @@ const Project = (props) => {
       setIsLoading(false)
     }
   }
+  const handleSort = async (field) => {
+    // If the same field is clicked again, toggle the sorting order
+    if (field === sortBy) {
+      setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')
+    } else {
+      // Otherwise, set the new sorting field and reset the sorting order
+      setSortBy(field)
+      setSortOrder('desc')
+    }
+    await getTasks()
+  }
 
   useEffect(() => {
+    console.log('get tasks')
     getTasks()
+  }, [projectId, sortBy, sortOrder])
+  useEffect(() => {
+    console.log('resetState')
     resetState()
   }, [projectId])
 
@@ -283,11 +313,27 @@ const Project = (props) => {
                 >
                   <tr>
                     <th></th>
-                    <th>Item</th>
-                    <th>Next Action</th>
-                    <th>Priority</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
+                    {[
+                      'item',
+                      'nextAction',
+                      'priority',
+                      'createdAt',
+                      'updatedAt',
+                    ].map((h) => (
+                      <th
+                        onClick={() => handleSort(h)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {h
+                          .split(/(?=[A-Z])/)
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() + word.slice(1),
+                          )
+                          .join(' ')}{' '}
+                        {sortBy === h && (sortOrder === 'asc' ? '^' : 'v')}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>

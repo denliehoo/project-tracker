@@ -24,7 +24,19 @@ const getAllTasksForProject = async (req, res) => {
     return res.status(403).json({ error: 'Project has been locked' })
 
   try {
-    const tasks = await Task.find({ project: id }).populate('project')
+    const { sortBy, sortOrder } = req.query
+    console.log(sortBy)
+    console.log(sortOrder)
+    const sortOptions = {}
+    if (sortBy && sortOrder) {
+      sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1
+    }
+    const tasks = await Task.find({ project: id })
+      .populate('project')
+      .sort(sortOptions)
+
+    // const tasks = await Task.find({ project: id }).populate('project')
+    // console.log(tasks)
     return res.json(tasks)
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch tasks' })
