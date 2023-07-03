@@ -24,6 +24,7 @@
 
 // export default Navbar
 
+import { Typography } from '@mui/material'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -32,7 +33,6 @@ const Navbar = () => {
 
   const navbarStyle = {
     background: '#f2f2f2',
-    borderBottom: '1px solid #ccc',
     padding: '10px',
     display: 'flex',
     justifyContent: 'space-between',
@@ -53,7 +53,6 @@ const Navbar = () => {
   const linkStyle = {
     cursor: 'pointer',
     marginLeft: '10px',
-    textDecoration: 'underline',
   }
 
   return (
@@ -64,7 +63,7 @@ const Navbar = () => {
           navigate('/dashboard')
         }}
       >
-        Logo
+        <Typography variant="h5">Project Tracker</Typography>
       </div>
       <div style={linkContainerStyle}>
         <div style={linkStyle}>

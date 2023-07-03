@@ -1,4 +1,5 @@
 // import classes from "./UpdateProjectModal.module.css";
+import { Grid, TextField } from '@mui/material'
 import { apiCallAuth } from '../../../api/apiRequest'
 import CustomModal from '../../../components/UI/CustomModal'
 import { useState } from 'react'
@@ -13,19 +14,48 @@ const UpdateProjectModal = (props) => {
     updateProjectDetails,
     setUpdateProjectDetails,
   } = props
+  const handleUpdateProject = () => {
+    setIsLoading(true)
+    console.log('*****')
+    console.log({ ...updateProjectDetails })
+
+    const updateProject = async () => {
+      try {
+        const res = await apiCallAuth('put', `/projects/${projectId}`, {
+          ...updateProjectDetails,
+        })
+        console.log(res)
+
+        setIsLoading(false)
+        setUpdateProjectDetails(false)
+        resetState()
+        props.onClose()
+        window.location.reload() // ****need to do a cleaner refresh maybe use redux to trigger a refresh
+
+        await getTasks()
+      } catch (err) {
+        setIsLoading(false)
+        console.log(err)
+      }
+    }
+    updateProject()
+  }
 
   return (
     <CustomModal
       open={props.open}
       onClose={props.onClose}
       isLoading={isLoading}
+      title="Update Project"
+      onConfirm={handleUpdateProject}
     >
-      <h3>Update Project </h3>
-      <div>
-        <label>
-          Name:
-          <input
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
             type="text"
+            label="Name"
+            variant="outlined"
+            fullWidth
             value={updateProjectDetails.name || ''}
             onChange={(event) => {
               setUpdateProjectDetails({
@@ -34,12 +64,13 @@ const UpdateProjectModal = (props) => {
               })
             }}
           />
-        </label>
-
-        <label>
-          Description:
-          <input
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
             type="text"
+            label="Description"
+            variant="outlined"
+            fullWidth
             value={updateProjectDetails.description || ''}
             onChange={(event) => {
               setUpdateProjectDetails({
@@ -48,43 +79,8 @@ const UpdateProjectModal = (props) => {
               })
             }}
           />
-        </label>
-
-        <div>
-          <button
-            onClick={() => {
-              setIsLoading(true)
-              console.log('*****')
-              console.log({ ...updateProjectDetails })
-
-              const updateProject = async () => {
-                try {
-                  const res = await apiCallAuth(
-                    'put',
-                    `/projects/${projectId}`,
-                    { ...updateProjectDetails },
-                  )
-                  console.log(res)
-
-                  setIsLoading(false)
-                  setUpdateProjectDetails(false)
-                  resetState()
-                  props.onClose()
-                  window.location.reload() // ****need to do a cleaner refresh maybe use redux to trigger a refresh
-
-                  await getTasks()
-                } catch (err) {
-                  setIsLoading(false)
-                  console.log(err)
-                }
-              }
-              updateProject()
-            }}
-          >
-            Confirm Update Project
-          </button>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     </CustomModal>
   )
 }

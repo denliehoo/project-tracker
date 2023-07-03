@@ -19,11 +19,6 @@ const mainContainerStyle = {
   flex: '1', // occupy remaining vertical space
 }
 
-const sidebarStyle = {
-  width: '20%', // adjust the width as per your needs
-  background: '#f2f2f2', // sidebar background color
-}
-
 const mainStyle = {
   flex: '1', // occupy remaining space
   padding: '20px', // adjust the padding as per your needs
@@ -88,7 +83,6 @@ const Layout = (props) => {
                 sharedProject={sharedProject}
                 ownProjects={ownProjects}
                 refreshProjects={getProjects}
-                style={sidebarStyle}
               />
             )}
             <main style={mainStyle}>{props.children}</main>

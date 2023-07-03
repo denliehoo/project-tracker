@@ -110,7 +110,6 @@ const changePaidStatus = async (req, res) => {
   })
 }
 // Google OAUTH
-// need find a way to delay this since the env is undefined if we execute immediately
 passport.use(
   new GoogleStrategy(
     {
@@ -160,9 +159,10 @@ const googleAuthCallback = async (req, res, next) => {
     'google',
     { failureRedirect: '/login' },
     (err, data) => {
-      console.log(data.profile)
-      console.log(data.token)
+      // console.log(data.profile)
+      // console.log(data.token)
       if (err) {
+        console.log('Error has occured.....')
         // Handle any error that occurred during authentication
         console.log(err)
         return next(err)

@@ -1,4 +1,5 @@
 // import classes from "./ShareProjectModal.module.css";
+import { Button, Grid, TextField, Typography } from '@mui/material'
 import { apiCallAuth } from '../../../api/apiRequest'
 import CustomModal from '../../../components/UI/CustomModal'
 import { useState } from 'react'
@@ -9,6 +10,27 @@ const ShareProjectModal = (props) => {
   const [emailToDelete, setEmailToDelete] = useState('')
   const [error, setError] = useState('')
   const { projectId, resetState, getTasks, projectDetails } = props
+  const handleShareProject = () => {
+    setIsLoading(true)
+
+    const shareProject = async () => {
+      try {
+        const res = await apiCallAuth('put', `/projects/${projectId}/sharing`, {
+          email: [emails],
+        })
+        console.log(res)
+
+        setIsLoading(false)
+        //   resetState()
+
+        await getTasks()
+      } catch (err) {
+        setIsLoading(false)
+        console.log(err)
+      }
+    }
+    shareProject()
+  }
 
   return (
     <CustomModal
@@ -20,69 +42,56 @@ const ShareProjectModal = (props) => {
         setError('')
       }}
       isLoading={isLoading}
+      title={`Sharing for ${projectDetails.name}`}
+      confirmButtonText={'Confirm Share'}
+      onConfirm={handleShareProject}
     >
-      <h3>Sharing for {projectDetails.name}</h3>
-      <h4>Sharing With:</h4>
+      <div style={{ marginBottom: '10px' }}>
+        <Typography variant="h6">Sharing With:</Typography>
+      </div>
       {projectDetails?.editors?.map((e) => (
-        <div>
-          <span
-            onClick={() => {
-              setEmailToDelete(e)
-              console.log(`atempt to remove ${e}`)
-            }}
-          >
-            x
-          </span>{' '}
-          {e}
-        </div>
+        <span
+          style={{
+            cursor: 'pointer',
+            border: '1px solid black',
+            padding: '5px',
+            backgroundColor: emailToDelete === e ? 'red' : null,
+          }}
+          onClick={() => {
+            // if already select, deselect it
+            setEmailToDelete(emailToDelete === e ? '' : e)
+          }}
+        >
+          x {e}
+        </span>
       ))}
       <div>
-        <label>
-          Email:
-          <input
-            type="text"
-            value={emails || ''}
-            onChange={(event) => {
-              setEmails(event.target.value)
-            }}
-          />
-        </label>
+        <Grid
+          container
+          spacing={2}
+          style={{ marginTop: '10px', marginBottom: '10px' }}
+        >
+          <Grid item xs={12}>
+            <TextField
+              type="text"
+              label="Email To Share"
+              variant="outlined"
+              fullWidth
+              value={emails || ''}
+              onChange={(event) => {
+                setEmails(event.target.value)
+              }}
+            />
+          </Grid>
+        </Grid>
 
         <div>
-          <button
-            onClick={() => {
-              setIsLoading(true)
-
-              const shareProject = async () => {
-                try {
-                  const res = await apiCallAuth(
-                    'put',
-                    `/projects/${projectId}/sharing`,
-                    { email: [emails] },
-                  )
-                  console.log(res)
-
-                  setIsLoading(false)
-                  //   resetState()
-
-                  await getTasks()
-                } catch (err) {
-                  setIsLoading(false)
-                  console.log(err)
-                }
-              }
-              shareProject()
-            }}
-          >
-            Confirm Share Project
-          </button>
           {emailToDelete && (
-            <button
+            <Button
+              variant="outlined"
+              fullWidth
               onClick={() => {
                 setIsLoading(true)
-                console.log(projectId)
-                console.log(emailToDelete)
-
                 const deleteShare = async () => {
                   try {
                     // it could be that if you want to use .delete and send data that it follows a slightly
@@ -108,8 +117,8 @@ const ShareProjectModal = (props) => {
                 deleteShare()
               }}
             >
-              Confirm Delete
-            </button>
+              Remove {emailToDelete}
+            </Button>
           )}
           {error && <div>{error}</div>}
         </div>

@@ -8,6 +8,21 @@ import { useSelector } from 'react-redux'
 import UpdateProjectModal from './components/UpdateProjectModal'
 import DeleteProjectModal from './components/DeleteProjectModal'
 import ShareProjectModal from './components/ShareProjectModal'
+import {
+  Box,
+  Button,
+  Grid,
+  Tooltip,
+  Typography,
+  IconButton,
+} from '@mui/material'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditNoteIcon from '@mui/icons-material/EditNote'
+import SaveAsIcon from '@mui/icons-material/SaveAs'
+import EditIcon from '@mui/icons-material/Edit'
+import FolderSharedIcon from '@mui/icons-material/FolderShared'
 
 const Project = (props) => {
   const { projectId } = useParams()
@@ -119,6 +134,35 @@ const Project = (props) => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
   }
 
+  const handleEdit = () => {
+    if (!isEdit) {
+      // edit task
+      if (!selectedRow) return setError('Please select a row to edit')
+      setIsEdit(true)
+    }
+    if (isEdit) {
+      // save task
+      setIsEdit(false)
+      const editTask = async () => {
+        try {
+          const res = await apiCallAuth(
+            'put',
+            `/tasks/${selectedRow}`,
+            selectedRowDetails,
+          )
+
+          setIsLoading(false)
+          resetState()
+
+          await getTasks()
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      editTask()
+    }
+  }
+
   useEffect(() => {
     getTasks()
   }, [projectId, sortBy, sortOrder, currentPage, limit])
@@ -159,81 +203,93 @@ const Project = (props) => {
       ) : (
         <div>
           {!isLoading && (
-            <div>
-              Project: {projectDetails.name} {projectId}
-            </div>
-          )}
-          {!isLoading && (
-            <div>
-              <span>Actions tool bar</span>
-              {/* edit task button */}
-              <button
-                onClick={() => {
-                  if (!isEdit) {
-                    // edit task
-                    if (!selectedRow)
-                      return setError('Please select a row to edit')
-                    setIsEdit(true)
-                  }
-                  if (isEdit) {
-                    // save task
-                    setIsEdit(false)
-                    const editTask = async () => {
-                      try {
-                        const res = await apiCallAuth(
-                          'put',
-                          `/tasks/${selectedRow}`,
-                          selectedRowDetails,
-                        )
-
-                        setIsLoading(false)
-                        resetState()
-
-                        await getTasks()
-                      } catch (err) {
-                        console.log(err)
-                      }
-                    }
-                    editTask()
-                  }
-                }}
-              >
-                {isEdit ? 'Save Task' : 'Edit Task'}
-              </button>
-              {/* add task button */}
-              <button
-                onClick={() => {
-                  setIsAddTask(!isAddTask)
-                }}
-              >
-                Add Task
-              </button>
-              {/* delete task button */}
-              <button
-                onClick={() => {
-                  if (!selectedRow)
-                    return setError('Please select a row to delete')
-                  setIsConfirmDelete(true)
-                }}
-              >
-                Delete Task
-              </button>
-              {isOwner && (
-                <button onClick={() => setIsUpdateProject(true)}>
-                  Update Project
-                </button>
-              )}
-              {isOwner && (
-                <button onClick={() => setIsDeleteProject(true)}>
-                  Delete Project
-                </button>
-              )}
-              {isOwner && (
-                <button onClick={() => setIsShareProject(true)}>
-                  Share Project
-                </button>
-              )}
-            </div>
+            <Grid
+              container
+              justifyContent="space-between"
+              spacing={2}
+              style={{ marginBottom: '10px' }}
+            >
+              <Grid item>
+                <Typography variant="h5"> {projectDetails.name}</Typography>
+              </Grid>
+              {/* Buttons */}
+              <Grid item>
+                {/* edit task button */}
+                <Box display="inline-block" marginRight={1}>
+                  <Tooltip title={isEdit ? 'Save Task' : 'Edit Task'}>
+                    <IconButton
+                      onClick={() => {
+                        handleEdit()
+                      }}
+                    >
+                      {isEdit ? <SaveAsIcon /> : <EditIcon />}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                {/* add task button */}
+                <Box display="inline-block" marginRight={1}>
+                  <Tooltip title="Add Task">
+                    <IconButton
+                      onClick={() => {
+                        setIsAddTask(!isAddTask)
+                      }}
+                    >
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                {/* delete task button */}
+                <Box display="inline-block" marginRight={1}>
+                  <Tooltip title="Delete Task">
+                    <IconButton
+                      onClick={() => {
+                        if (!selectedRow)
+                          return setError('Please select a row to delete')
+                        setIsConfirmDelete(true)
+                      }}
+                    >
+                      <RemoveCircleOutlineIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                {isOwner && (
+                  <Box display="inline-block" marginRight={1}>
+                    <Tooltip title="Update Project">
+                      <IconButton
+                        variant="contained"
+                        onClick={() => setIsUpdateProject(true)}
+                      >
+                        <EditNoteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+                {isOwner && (
+                  <Box display="inline-block" marginRight={1}>
+                    <Tooltip title="Delete Project">
+                      <IconButton
+                        variant="contained"
+                        onClick={() => setIsDeleteProject(true)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+                {isOwner && (
+                  <Box display="inline-block" marginRight={1}>
+                    <Tooltip title="Share Project">
+                      <IconButton
+                        variant="contained"
+                        onClick={() => setIsShareProject(true)}
+                      >
+                        <FolderSharedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+              </Grid>
+            </Grid>
           )}
           {/* Share Project Modal */}
           <ShareProjectModal

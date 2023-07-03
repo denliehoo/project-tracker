@@ -9,37 +9,35 @@ const DeleteProjectModal = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const { projectId, resetState, getTasks, projectName } = props
 
+  const handleDelete = () => {
+    const deleteProject = async () => {
+      setIsLoading(true)
+      try {
+        const res = await apiCallAuth('delete', `/projects/${projectId}`)
+        console.log(res)
+
+        setIsLoading(false)
+        resetState()
+        navigate('/dashboard')
+        window.location.reload() // ****need to do a cleaner refresh maybe use redux to trigger a refresh
+
+        await getTasks()
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    deleteProject()
+  }
+
   return (
     <CustomModal
       open={props.open}
       onClose={props.onClose}
       isLoading={isLoading}
+      title="Delete Project"
+      onConfirm={handleDelete}
     >
-      Are you sure you want to delete the project: {projectName}?
-      <button
-        onClick={() => {
-          console.log('deleted!!!!!!')
-          const deleteProject = async () => {
-            setIsLoading(true)
-            try {
-              const res = await apiCallAuth('delete', `/projects/${projectId}`)
-              console.log(res)
-
-              setIsLoading(false)
-              resetState()
-              navigate('/dashboard')
-              window.location.reload() // ****need to do a cleaner refresh maybe use redux to trigger a refresh
-
-              await getTasks()
-            } catch (err) {
-              console.log(err)
-            }
-          }
-          deleteProject()
-        }}
-      >
-        Confirm Delete
-      </button>
+      Are you sure you want to delete '{projectName}' ?
     </CustomModal>
   )
 }

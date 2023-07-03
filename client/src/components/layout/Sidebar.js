@@ -11,9 +11,18 @@ const Sidebar = (props) => {
   const [addProjectDetails, setAddProjectDetails] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 
+  const sidebarStyle = {
+    width: '15%', // adjust the width as per your needs
+    background: '#f2f2f2', // sidebar background color
+    padding: '10px',
+    display: 'flex', // Use flexbox to arrange content
+    flexDirection: 'column', // Stack items vertically
+    justifyContent: 'space-between', // Distribute items evenly with space in between
+  }
+
   const navigate = useNavigate()
   const ProjectItem = (p, index) => (
-    <div key={index}>
+    <div key={index} style={{ cursor: 'pointer' }}>
       {/* Render dynamic components based on data */}
       <p
         onClick={() => {
@@ -26,21 +35,27 @@ const Sidebar = (props) => {
   )
 
   return (
-    <div style={props.style}>
-      <h2>Sidebar</h2>
+    <div style={sidebarStyle}>
       <div>
-        <h2>Projects</h2>
-        <h3>Own</h3>
-        <div>{props.ownProjects.map((p, index) => ProjectItem(p, index))}</div>
-        <h3>Shared</h3>
+        <Typography variant="h6">Own Projects</Typography>
         <div>
-          {props.sharedProject.map((p, index) => ProjectItem(p, index))}
+          {props.ownProjects.length
+            ? props.ownProjects.map((p, index) => ProjectItem(p, index))
+            : 'No owned projects'}
+        </div>
+        <Typography variant="h6">Shared Projects</Typography>
+        <div>
+          {props.sharedProject.length
+            ? props.sharedProject.map((p, index) => ProjectItem(p, index))
+            : 'No projects shared with you'}
         </div>
       </div>
       {/* Add Projects */}
       <div>
         <Button
           variant="outlined"
+          fullWidth
+          sx={{ color: 'primary.main' }}
           onClick={() => {
             console.log('attempt to add')
             setIsAddProject(true)

@@ -1,7 +1,9 @@
 # To do
+- [Client] Styling of nav and side bar
 - [Client] work more on basic structure of share project and unlock
     - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
     - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
+- [Client + Server] Once JWT token expires, client getting 403 Forbidden and it doesn't redirect to Login. Find out what to do? Maybe just change to 401 unauthorized? Consider how that affects other parts of the app
 - [Client] Ensure proper error handling done
 - [Client] Basic styling using MUI
 
@@ -67,3 +69,4 @@
 - 02/07/23: [Client + Server] Sorting For Task
 - 02/07/23: [Client + Server] Pagination For Task
 - 02/07/23: [Client] styling of login page
+- 03/07/23: [Client] Basic styling of Projects Component 
