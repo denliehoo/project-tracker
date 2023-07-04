@@ -23,7 +23,8 @@ import EditNoteIcon from '@mui/icons-material/EditNote'
 import SaveAsIcon from '@mui/icons-material/SaveAs'
 import EditIcon from '@mui/icons-material/Edit'
 import FolderSharedIcon from '@mui/icons-material/FolderShared'
-
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 const Project = (props) => {
   const { projectId } = useParams()
   const [isLoading, setIsLoading] = useState(true)
@@ -497,18 +498,18 @@ const Project = (props) => {
                   </span>
                 )}
 
-                <button
+                <IconButton
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
                 >
-                  Previous
-                </button>
-                <button
+                  <ArrowLeftIcon />
+                </IconButton>
+                <IconButton
                   onClick={handleNextPage}
                   disabled={currentPage === totalPageCount}
                 >
-                  Next
-                </button>
+                  <ArrowRightIcon />
+                </IconButton>
               </div>
               {/* Page limit */}
               <div>

@@ -5,6 +5,16 @@ import { apiCallAuth } from '../../api/apiRequest'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CustomModal from '../UI/CustomModal'
+import {
+  Box,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  TextField,
+} from '@mui/material'
 
 const Sidebar = (props) => {
   const [isAddProject, setIsAddProject] = useState(false)
@@ -14,6 +24,7 @@ const Sidebar = (props) => {
   const sidebarStyle = {
     width: '15%', // adjust the width as per your needs
     background: '#f2f2f2', // sidebar background color
+    // backgroundColor: 'primary.main',
     padding: '10px',
     display: 'flex', // Use flexbox to arrange content
     flexDirection: 'column', // Stack items vertically
@@ -21,35 +32,66 @@ const Sidebar = (props) => {
   }
 
   const navigate = useNavigate()
+  // const ProjectItem = (p, index) => (
+  //   <div key={index} style={{ cursor: 'pointer' }}>
+  //     {/* Render dynamic components based on data */}
+  //     <p
+  //       onClick={() => {
+  //         navigate(`/project/${p._id.toString()}`)
+  //       }}
+  //     >
+  //       {p.name}
+  //     </p>
+  //   </div>
+  // )
+
+  const handleAddProject = () => {
+    console.log(addProjectDetails)
+    const addProject = async () => {
+      try {
+        const res = await apiCallAuth('post', '/projects', addProjectDetails)
+        console.log(res)
+        setIsLoading(false)
+        setIsAddProject(false)
+        props.refreshProjects()
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    addProject()
+  }
+
   const ProjectItem = (p, index) => (
-    <div key={index} style={{ cursor: 'pointer' }}>
+    <ListItem disablePadding key={index}>
       {/* Render dynamic components based on data */}
-      <p
+      <ListItemButton
         onClick={() => {
           navigate(`/project/${p._id.toString()}`)
         }}
       >
-        {p.name}
-      </p>
-    </div>
+        <ListItemText primary={p.name} />
+      </ListItemButton>
+    </ListItem>
   )
-
   return (
-    <div style={sidebarStyle}>
-      <div>
+    <Box sx={sidebarStyle}>
+      <List>
         <Typography variant="h6">Own Projects</Typography>
-        <div>
-          {props.ownProjects.length
-            ? props.ownProjects.map((p, index) => ProjectItem(p, index))
-            : 'No owned projects'}
-        </div>
+        {props.ownProjects.length ? (
+          props.ownProjects.map((p, index) => ProjectItem(p, index))
+        ) : (
+          <Typography sx={{ padding: '5px' }}>No owned projects</Typography>
+        )}
+        <Divider />
         <Typography variant="h6">Shared Projects</Typography>
-        <div>
-          {props.sharedProject.length
-            ? props.sharedProject.map((p, index) => ProjectItem(p, index))
-            : 'No projects shared with you'}
-        </div>
-      </div>
+        {props.sharedProject.length ? (
+          props.sharedProject.map((p, index) => ProjectItem(p, index))
+        ) : (
+          <Typography sx={{ padding: '5px' }}>
+            No projects shared with you
+          </Typography>
+        )}
+      </List>
       {/* Add Projects */}
       <div>
         <Button
@@ -70,69 +112,47 @@ const Sidebar = (props) => {
         onClose={() => {
           setIsAddProject(false)
         }}
+        title="Add Project"
+        onConfirm={handleAddProject}
       >
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          <div>
-            <Typography variant="h5">Add Project</Typography>
-            <div>
-              <label>
-                Name:
-                <input
-                  type="text"
-                  value={addProjectDetails.name || ''}
-                  onChange={(event) => {
-                    setAddProjectDetails({
-                      ...addProjectDetails,
-                      name: event.target.value,
-                    })
-                  }}
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Description:
-                <input
-                  type="text"
-                  value={addProjectDetails.description || ''}
-                  onChange={(event) => {
-                    setAddProjectDetails({
-                      ...addProjectDetails,
-                      description: event.target.value,
-                    })
-                  }}
-                />
-              </label>
-            </div>
-            <button
-              onClick={() => {
-                console.log(addProjectDetails)
-                const addProject = async () => {
-                  try {
-                    const res = await apiCallAuth(
-                      'post',
-                      '/projects',
-                      addProjectDetails,
-                    )
-                    console.log(res)
-                    setIsLoading(false)
-                    setIsAddProject(false)
-                    props.refreshProjects()
-                  } catch (err) {
-                    console.log(err)
-                  }
-                }
-                addProject()
-              }}
-            >
-              Confirm Add Project
-            </button>
-          </div>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                type="text"
+                label="Name"
+                variant="outlined"
+                fullWidth
+                value={addProjectDetails.name || ''}
+                onChange={(event) => {
+                  setAddProjectDetails({
+                    ...addProjectDetails,
+                    name: event.target.value,
+                  })
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                type="text"
+                label="Description"
+                variant="outlined"
+                fullWidth
+                value={addProjectDetails.description || ''}
+                onChange={(event) => {
+                  setAddProjectDetails({
+                    ...addProjectDetails,
+                    description: event.target.value,
+                  })
+                }}
+              />
+            </Grid>
+          </Grid>
         )}
       </CustomModal>
-    </div>
+    </Box>
   )
 }
 

@@ -27,7 +27,7 @@ const createCheckoutSession = async (req, res) => {
       },
     ],
     mode: 'subscription',
-    success_url: `${YOUR_DOMAIN}/settings`,
+    success_url: `${YOUR_DOMAIN}/billing`,
     cancel_url: `${YOUR_DOMAIN}/dashboard`,
   })
 
@@ -50,7 +50,7 @@ const createPortalSession = async (req, res) => {
 
   // This is the url to which the customer will be redirected when they are done
   // managing their billing with the portal.
-  const returnUrl = 'http://localhost:3000/settings'
+  const returnUrl = 'http://localhost:3000/billing'
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: checkoutSession.customer,

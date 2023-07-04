@@ -5,7 +5,8 @@ const authenticateJWT = (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
       if (err) {
-        return res.sendStatus(403) // Forbidden
+        return res.sendStatus(401)
+        // return res.sendStatus(403) // Forbidden
       }
       req.email = decoded.email
       // if the current time is greater than the expiration time (meaning token expired, redirect to login)

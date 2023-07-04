@@ -1,22 +1,33 @@
 // import classes from './Settings.module.css'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
-const Settings = () => {
+import { Box, Button, Typography } from '@mui/material'
+const Billing = () => {
   const userDetails = useSelector((state) => state.userDetails)
   const apiUrl = process.env.REACT_APP_API_URL
 
   return (
     <div>
       {console.log(userDetails)}
-      <div>Settings</div>
-      <div>Payments</div>
+      <Typography variant="h5">Billing</Typography>
       {userDetails.isPremium ? (
-        <div>You are a premium user</div>
+        <Box>
+          <Typography>You are a premium user</Typography>
+          <Typography>
+            Your next payment is due on: {userDetails.endDate}
+          </Typography>
+        </Box>
       ) : (
-        <div> Not a premium user</div>
+        <Box>
+          <Typography>Not a premium user</Typography>
+          <Typography>
+            Premium users can have as many projects as they want
+          </Typography>
+        </Box>
       )}
       {!userDetails.isPremium && (
-        <button
+        <Button
+          variant="contained"
           onClick={() => {
             const checkOut = async () => {
               try {
@@ -55,11 +66,12 @@ const Settings = () => {
           }}
         >
           go premium
-        </button>
+        </Button>
       )}
       <div>
         {userDetails.stripeCheckoutSession && (
-          <button
+          <Button
+            variant="contained"
             onClick={() => {
               const createPortalSession = async () => {
                 try {
@@ -94,11 +106,11 @@ const Settings = () => {
             }}
           >
             Manage Billing
-          </button>
+          </Button>
         )}
       </div>
     </div>
   )
 }
 
-export default Settings
+export default Billing

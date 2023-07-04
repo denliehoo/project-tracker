@@ -11,7 +11,9 @@ const jwt = require('jsonwebtoken')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const passport = require('passport')
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
+// const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+
 const { User } = models
 
 const getAllUsers = async (req, res) => {

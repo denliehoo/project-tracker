@@ -24,7 +24,7 @@
 
 // export default Navbar
 
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -33,6 +33,7 @@ const Navbar = () => {
 
   const navbarStyle = {
     background: '#f2f2f2',
+    // backgroundColor: 'primary.main',
     padding: '10px',
     display: 'flex',
     justifyContent: 'space-between',
@@ -56,7 +57,7 @@ const Navbar = () => {
   }
 
   return (
-    <div style={navbarStyle}>
+    <Box sx={navbarStyle}>
       <div
         style={logoStyle}
         onClick={() => {
@@ -69,17 +70,18 @@ const Navbar = () => {
         <div style={linkStyle}>
           <div
             onClick={() => {
-              navigate('/settings')
+              navigate('/billing')
             }}
           >
-            Settings
+            Billing
           </div>
         </div>
         <div style={linkStyle}>
           <div
             onClick={() => {
               localStorage.removeItem('JWT')
-              navigate('/login')
+              window.location.href = 'http://localhost:3000/login'
+              // navigate('/login')
             }}
           >
             Logout
@@ -89,7 +91,7 @@ const Navbar = () => {
           <div>Profile</div>
         </div>
       </div>
-    </div>
+    </Box>
   )
 }
 

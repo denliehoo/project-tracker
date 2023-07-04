@@ -1,5 +1,5 @@
 # To do
-- [Client] Styling of nav and side bar
+- [Client + Server] Fix google login
 - [Client] work more on basic structure of share project and unlock
     - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
     - share: multiple adding of emails and when click x, should have maybe another modal confirmation (TBC?)
@@ -70,3 +70,5 @@
 - 02/07/23: [Client + Server] Pagination For Task
 - 02/07/23: [Client] styling of login page
 - 03/07/23: [Client] Basic styling of Projects Component 
+- 04/07/23: [Client] Styling of nav and side bar
+- 04/07/23: [Client] Settings change to billings page
