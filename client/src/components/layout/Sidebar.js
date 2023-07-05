@@ -15,11 +15,18 @@ import {
   ListItemText,
   TextField,
 } from '@mui/material'
+import { validateForm } from '../../utils/validateForm'
+import CustomFormFields from '../UI/CustomFormFields'
 
 const Sidebar = (props) => {
   const [isAddProject, setIsAddProject] = useState(false)
   const [addProjectDetails, setAddProjectDetails] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [validationErrors, setValidationErrors] = useState({})
+  const fieldsTypes = {
+    name: 'text',
+    description: 'text',
+  }
 
   const sidebarStyle = {
     width: '15%', // adjust the width as per your needs
@@ -46,7 +53,9 @@ const Sidebar = (props) => {
   // )
 
   const handleAddProject = () => {
-    console.log(addProjectDetails)
+    if (!validateForm(addProjectDetails, fieldsTypes, setValidationErrors))
+      return
+
     const addProject = async () => {
       try {
         const res = await apiCallAuth('post', '/projects', addProjectDetails)
@@ -111,6 +120,8 @@ const Sidebar = (props) => {
         open={isAddProject}
         onClose={() => {
           setIsAddProject(false)
+          setValidationErrors({})
+          setAddProjectDetails({})
         }}
         title="Add Project"
         onConfirm={handleAddProject}
@@ -118,38 +129,13 @@ const Sidebar = (props) => {
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                type="text"
-                label="Name"
-                variant="outlined"
-                fullWidth
-                value={addProjectDetails.name || ''}
-                onChange={(event) => {
-                  setAddProjectDetails({
-                    ...addProjectDetails,
-                    name: event.target.value,
-                  })
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                type="text"
-                label="Description"
-                variant="outlined"
-                fullWidth
-                value={addProjectDetails.description || ''}
-                onChange={(event) => {
-                  setAddProjectDetails({
-                    ...addProjectDetails,
-                    description: event.target.value,
-                  })
-                }}
-              />
-            </Grid>
-          </Grid>
+          <CustomFormFields
+            detailsToSubmit={addProjectDetails}
+            setDetailsToSubmit={setAddProjectDetails}
+            validationErrors={validationErrors}
+            setValidationErrors={setValidationErrors}
+            fieldsTypes={fieldsTypes}
+          />
         )}
       </CustomModal>
     </Box>

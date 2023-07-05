@@ -25,8 +25,6 @@ const getAllTasksForProject = async (req, res) => {
 
   try {
     const { sortBy, sortOrder, page, limit } = req.query
-    console.log(page)
-    console.log(limit)
     const sortOptions = {}
     if (sortBy && sortOrder) {
       sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1

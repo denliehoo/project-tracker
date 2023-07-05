@@ -13,7 +13,6 @@ const authenticateJWT = (req, res, next) => {
       if (Math.floor(Date.now() / 1000) > decoded.exp) {
         return res.status(401).json({ error: 'Token expired' })
       }
-      console.log('doesnt redirect')
       next()
     })
   } else {

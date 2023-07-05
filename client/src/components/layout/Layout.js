@@ -42,7 +42,13 @@ const Layout = (props) => {
       })
       // need call the getuserbyemail and put in plan... checkoutsess
       const { owner, editor, email, isPremium } = projectRes.data
-      const { plan, endDate, stripeId, stripeCheckoutSession } = userRes.data
+      const {
+        plan,
+        endDate,
+        stripeId,
+        stripeCheckoutSession,
+        name,
+      } = userRes.data
       setOwnProjects(owner)
       setSharedProjects(editor)
       dispatch(
@@ -55,6 +61,7 @@ const Layout = (props) => {
           endDate: endDate,
           stripeId: stripeId,
           stripeCheckoutSession: stripeCheckoutSession,
+          name: name,
         }),
       )
       setIsLoading(false)

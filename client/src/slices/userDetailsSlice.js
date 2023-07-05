@@ -13,6 +13,7 @@ const userDetailsSlice = createSlice({
     endDate: null,
     stripeId: '',
     stripeCheckoutSession: '',
+    name: '',
   },
   reducers: {
     addUserDetails(state, action) {
