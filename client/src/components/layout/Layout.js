@@ -30,6 +30,7 @@ const Layout = (props) => {
   const [ownProjects, setOwnProjects] = useState([])
   const [sharedProject, setSharedProjects] = useState([])
   const [callApi, setCallApi] = useState(true)
+  const [userDetails, setUserDetails] = useState({})
   const dispatch = useDispatch()
 
   const getProjects = async () => {
@@ -49,21 +50,21 @@ const Layout = (props) => {
         stripeCheckoutSession,
         name,
       } = userRes.data
+      const details = {
+        email: email,
+        owner: owner,
+        editor: editor,
+        isPremium: isPremium,
+        plan: plan,
+        endDate: endDate,
+        stripeId: stripeId,
+        stripeCheckoutSession: stripeCheckoutSession,
+        name: name,
+      }
       setOwnProjects(owner)
       setSharedProjects(editor)
-      dispatch(
-        addUserDetails({
-          email: email,
-          owner: owner,
-          editor: editor,
-          isPremium: isPremium,
-          plan: plan,
-          endDate: endDate,
-          stripeId: stripeId,
-          stripeCheckoutSession: stripeCheckoutSession,
-          name: name,
-        }),
-      )
+      dispatch(addUserDetails(details))
+      setUserDetails(details)
       setIsLoading(false)
       setCallApi(false)
     } catch (err) {
@@ -90,6 +91,7 @@ const Layout = (props) => {
                 sharedProject={sharedProject}
                 ownProjects={ownProjects}
                 refreshProjects={getProjects}
+                userDetails={userDetails}
               />
             )}
             <main style={mainStyle}>{props.children}</main>

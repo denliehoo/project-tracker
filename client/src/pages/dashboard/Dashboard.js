@@ -1,26 +1,21 @@
 import { useSelector } from 'react-redux'
 import { Box, Typography } from '@mui/material'
+import CenteredBoxInLayout from '../../components/UI/CenteredBoxInLayout'
 
 const Dashboard = (props) => {
   const userDetails = useSelector((state) => state.userDetails)
   console.log(userDetails)
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="85vh"
-    >
+    <CenteredBoxInLayout>
       {/* Your component goes here */}
-      <div>
-        <Typography variant="h3" sx={{ textAlign: 'center' }}>
-          Welcome back to Project Tracker
-        </Typography>
-        <Typography variant="h3" sx={{ textAlign: 'center' }}>
-          {userDetails.name}
-        </Typography>
-      </div>
-    </Box>
+
+      <Typography variant="h3" sx={{ textAlign: 'center' }}>
+        Welcome back to Project Tracker
+      </Typography>
+      <Typography variant="h3" sx={{ textAlign: 'center' }}>
+        {userDetails.name}
+      </Typography>
+    </CenteredBoxInLayout>
   )
 }
 

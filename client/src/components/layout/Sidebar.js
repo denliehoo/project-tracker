@@ -23,10 +23,12 @@ const Sidebar = (props) => {
   const [addProjectDetails, setAddProjectDetails] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [validationErrors, setValidationErrors] = useState({})
+  const [showGoPremium, setShowGoPremium] = useState(false)
   const fieldsTypes = {
     name: 'text',
     description: 'text',
   }
+  const isPremium = props.userDetails.isPremium
 
   const sidebarStyle = {
     width: '15%', // adjust the width as per your needs
@@ -39,22 +41,14 @@ const Sidebar = (props) => {
   }
 
   const navigate = useNavigate()
-  // const ProjectItem = (p, index) => (
-  //   <div key={index} style={{ cursor: 'pointer' }}>
-  //     {/* Render dynamic components based on data */}
-  //     <p
-  //       onClick={() => {
-  //         navigate(`/project/${p._id.toString()}`)
-  //       }}
-  //     >
-  //       {p.name}
-  //     </p>
-  //   </div>
-  // )
 
   const handleAddProject = () => {
     if (!validateForm(addProjectDetails, fieldsTypes, setValidationErrors))
       return
+    if (props.ownProjects?.length > 0 && !isPremium) {
+      setShowGoPremium(true)
+      return
+    }
 
     const addProject = async () => {
       try {
@@ -68,6 +62,12 @@ const Sidebar = (props) => {
       }
     }
     addProject()
+  }
+  const onCloseModal = () => {
+    setIsAddProject(false)
+    setValidationErrors({})
+    setAddProjectDetails({})
+    setShowGoPremium(false)
   }
 
   const ProjectItem = (p, index) => (
@@ -118,24 +118,37 @@ const Sidebar = (props) => {
       {/* Add Project Modal (refactor in the future to a modal) */}
       <CustomModal
         open={isAddProject}
-        onClose={() => {
-          setIsAddProject(false)
-          setValidationErrors({})
-          setAddProjectDetails({})
-        }}
+        onClose={onCloseModal}
         title="Add Project"
         onConfirm={handleAddProject}
       >
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          <CustomFormFields
-            detailsToSubmit={addProjectDetails}
-            setDetailsToSubmit={setAddProjectDetails}
-            validationErrors={validationErrors}
-            setValidationErrors={setValidationErrors}
-            fieldsTypes={fieldsTypes}
-          />
+          <Box>
+            <CustomFormFields
+              detailsToSubmit={addProjectDetails}
+              setDetailsToSubmit={setAddProjectDetails}
+              validationErrors={validationErrors}
+              setValidationErrors={setValidationErrors}
+              fieldsTypes={fieldsTypes}
+            />
+            {showGoPremium && (
+              <Box sx={{ marginTop: '10px' }}>
+                <Typography>Free users can only own 1 Project</Typography>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => {
+                    navigate('/billing')
+                    onCloseModal()
+                  }}
+                >
+                  Go Premium
+                </Button>
+              </Box>
+            )}
+          </Box>
         )}
       </CustomModal>
     </Box>

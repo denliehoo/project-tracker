@@ -87,9 +87,9 @@ const Navbar = () => {
             Logout
           </div>
         </div>
-        <div style={linkStyle}>
+        {/* <div style={linkStyle}>
           <div>Profile</div>
-        </div>
+        </div> */}
       </div>
     </Box>
   )

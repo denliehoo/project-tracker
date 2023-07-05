@@ -9,21 +9,38 @@ const ShareProjectModal = (props) => {
   const [emails, setEmails] = useState('')
   const [emailToDelete, setEmailToDelete] = useState('')
   const [error, setError] = useState('')
+  const [emailValidationError, setEmailValidationError] = useState('')
   const { projectId, resetState, getTasks, projectDetails } = props
-  const handleShareProject = () => {
-    setIsLoading(true)
 
+  const handleShareProject = () => {
+    if (!emails || emails.trim() === '') {
+      setEmailValidationError('Email To Share field cannot be empty')
+      return
+    }
+    if (emails === projectDetails?.owner) {
+      setEmailValidationError('You are the owner of the project')
+      return
+    }
+    if (projectDetails?.editors?.includes(emails)) {
+      setEmailValidationError(`You are already sharing with ${emails}`)
+      return
+    }
+
+    setIsLoading(true)
     const shareProject = async () => {
       try {
         const res = await apiCallAuth('put', `/projects/${projectId}/sharing`, {
           email: [emails],
         })
-        console.log(res)
 
         setIsLoading(false)
-        //   resetState()
-
-        await getTasks()
+        if (res.data.doesntExist.length > 0) {
+          setEmailValidationError(
+            `${emails} isn't an existing user in Project Tracker`,
+          )
+        } else {
+          await getTasks()
+        }
       } catch (err) {
         setIsLoading(false)
         console.log(err)
@@ -40,6 +57,7 @@ const ShareProjectModal = (props) => {
         setEmailToDelete('')
         setEmails('')
         setError('')
+        setEmailValidationError('')
       }}
       isLoading={isLoading}
       title={`Sharing for ${projectDetails.name}`}
@@ -55,7 +73,8 @@ const ShareProjectModal = (props) => {
             cursor: 'pointer',
             border: '1px solid black',
             padding: '5px',
-            backgroundColor: emailToDelete === e ? 'red' : null,
+            margin: '5px',
+            boxShadow: emailToDelete === e ? '0 0 5px #003e87' : null,
           }}
           onClick={() => {
             // if already select, deselect it
@@ -73,12 +92,15 @@ const ShareProjectModal = (props) => {
         >
           <Grid item xs={12}>
             <TextField
+              error={emailValidationError}
+              helperText={emailValidationError}
               type="text"
               label="Email To Share"
               variant="outlined"
               fullWidth
               value={emails || ''}
               onChange={(event) => {
+                setEmailValidationError('')
                 setEmails(event.target.value)
               }}
             />

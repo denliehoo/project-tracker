@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { apiCallAuth } from '../../api/apiRequest'
 import { useEffect, useState } from 'react'
 import AddTaskModal from './components/AddTaskModal'
@@ -25,6 +25,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import FolderSharedIcon from '@mui/icons-material/FolderShared'
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
+import CenteredBoxInLayout from '../../components/UI/CenteredBoxInLayout'
 const Project = (props) => {
   const { projectId } = useParams()
   const [isLoading, setIsLoading] = useState(true)
@@ -60,7 +61,9 @@ const Project = (props) => {
   const [totalPageCount, setTotalPageCount] = useState(1)
   const [totalTasks, setTotalTasks] = useState(0)
   const [limit, setLimit] = useState(10) // Default limit is 10
-  // const limit = 10
+
+  const navigate = useNavigate()
+
   const handleLimitChange = (event) => {
     setLimit(Number(event.target.value))
   }
@@ -174,33 +177,57 @@ const Project = (props) => {
   return (
     <div>
       {isForbidden ? (
-        <div>
-          Project has been locked...
-          <button
-            onClick={() => {
-              const unlockProject = async () => {
-                try {
-                  // put requests must have a body, if got nothing, just put null
-                  const res = await apiCallAuth(
-                    'put',
-                    `/projects/${projectId}/unlockProject`,
-                  )
+        <CenteredBoxInLayout>
+          <Typography variant="h3" sx={{ textAlign: 'center' }}>
+            Project has been locked
+          </Typography>
 
-                  setIsLoading(false)
-                  resetState()
-                  setIsForbidden(false)
+          <Typography sx={{ textAlign: 'center' }}>
+            {isOwner
+              ? `Free users can only own 1 Project. If you choose not to be
+              a premium user, you may unlock and use only 1 Project at a time.`
+              : 'Please inform the owner to unlock the Project'}
+          </Typography>
 
-                  await getTasks()
-                } catch (err) {
-                  console.log(err)
+          {isOwner && (
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ marginTop: '10px', marginBottom: '10px' }}
+              onClick={() => {
+                const unlockProject = async () => {
+                  try {
+                    // put requests must have a body, if got nothing, just put null
+                    const res = await apiCallAuth(
+                      'put',
+                      `/projects/${projectId}/unlockProject`,
+                    )
+
+                    setIsLoading(false)
+                    resetState()
+                    setIsForbidden(false)
+
+                    await getTasks()
+                  } catch (err) {
+                    console.log(err)
+                  }
                 }
-              }
-              unlockProject()
-            }}
-          >
-            Unlock Project
-          </button>
-        </div>
+                unlockProject()
+              }}
+            >
+              Unlock Project
+            </Button>
+          )}
+          {isOwner && (
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate('/billing')}
+            >
+              Go Premium
+            </Button>
+          )}
+        </CenteredBoxInLayout>
       ) : (
         <div>
           {!isLoading && (

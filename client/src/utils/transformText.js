@@ -13,8 +13,6 @@ const splitTextByCaps = (text) => {
   // Join the words back together with spaces
   const transformedText = capitalizedWords.join(' ')
 
-  console.log(transformedText)
-
   return transformedText
 }
 
