@@ -1,8 +1,16 @@
 # To do
-- [Client] Validation for edit task
 - [Client] Do a better dashboard
 - [Client] Ensure proper error handling done
 - [Client] Basic styling using MUI
+- [Server + Client] Deployment
+    - [Client + Server] Make a fork and call it pre-deployment
+    - Server: Change MongoDB local to cloud. Leave option to use as local too. Maybe can put in npm start scripts
+    - Server: Google OAuth need to do something?
+    - Server: Deploy server and get the link
+    - Client: Link the URL for API in clients
+    - Client: Deploy and get client URL
+    - Server: Change webhook for stripe api to non-local (but still testing) by giving them the client URL
+    - Server: Update the links where necessary in server 
 
 # Low Priority Task
 - [Server + Client] Add google authenticator for 2FA
@@ -74,3 +82,4 @@
     - unlock: need confirmation to unlock, also let usual know only 1 can unlock unless premium, etc....
     - share: need do validation and error handling upon sharing
         - e.g. if type and submit a name that is already shared, reject on frontend before even sending to API,etc...
+- 05/07/23: - [Client] Validation for edit task

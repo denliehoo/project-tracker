@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import UpdateProjectModal from './components/UpdateProjectModal'
 import DeleteProjectModal from './components/DeleteProjectModal'
 import ShareProjectModal from './components/ShareProjectModal'
+import CancelIcon from '@mui/icons-material/Cancel'
 import {
   Box,
   Button,
@@ -15,6 +16,8 @@ import {
   Tooltip,
   Typography,
   IconButton,
+  TextField,
+  Alert,
 } from '@mui/material'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
@@ -68,9 +71,15 @@ const Project = (props) => {
     setLimit(Number(event.target.value))
   }
 
-  const handleCheckboxChange = (rowId) => {
+  const handleCheckboxChange = (t) => {
     setError('')
-    setSelectedRow(rowId)
+    setSelectedRow(t._id)
+    setSelectedRowDetails({
+      item: t.item,
+      nextAction: t.nextAction,
+      priority: t.priority,
+    })
+    if (isEdit) setIsEdit(false)
   }
 
   const resetState = () => {
@@ -145,9 +154,17 @@ const Project = (props) => {
       setIsEdit(true)
     }
     if (isEdit) {
+      // validate that imputs not empty
+      if (Object.values(selectedRowDetails).includes('')) {
+        setError('Please ensure that edited inputs are not empty')
+        return
+      }
+
+      //
       // save task
       setIsEdit(false)
       const editTask = async () => {
+        console.log(selectedRowDetails)
         try {
           const res = await apiCallAuth(
             'put',
@@ -165,6 +182,12 @@ const Project = (props) => {
       }
       editTask()
     }
+  }
+
+  const handleCancelEdit = () => {
+    setIsEdit(false)
+    setSelectedRow(null)
+    setSelectedRowDetails({})
   }
 
   useEffect(() => {
@@ -240,8 +263,23 @@ const Project = (props) => {
               <Grid item>
                 <Typography variant="h5"> {projectDetails.name}</Typography>
               </Grid>
-              {/* Buttons */}
+              {/* Action Tool Bar Buttons */}
               <Grid item>
+                {/* cancel edit task button */}
+                {isEdit && (
+                  <Box display="inline-block" marginRight={1}>
+                    <Tooltip title="Cancel Edit">
+                      <IconButton
+                        onClick={() => {
+                          handleCancelEdit()
+                        }}
+                      >
+                        <CancelIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+
                 {/* edit task button */}
                 <Box display="inline-block" marginRight={1}>
                   <Tooltip title={isEdit ? 'Save Task' : 'Edit Task'}>
@@ -388,7 +426,7 @@ const Project = (props) => {
             nextActionHistoryItem={nextActionHistoryItem}
           />
 
-          {error && <div>{error}</div>}
+          {error && <Alert severity="error">{error}</Alert>}
           {/* Table */}
           {isLoading ? (
             <div>Loading...</div>
@@ -437,12 +475,7 @@ const Project = (props) => {
                               type="checkbox"
                               checked={selectedRow === t._id}
                               onChange={() => {
-                                handleCheckboxChange(t._id)
-                                setSelectedRowDetails({
-                                  item: t.item,
-                                  nextAction: t.nextAction,
-                                  priority: t.priority,
-                                })
+                                handleCheckboxChange(t)
                               }}
                             />
                           </td>
@@ -451,6 +484,12 @@ const Project = (props) => {
                               <input
                                 type="text"
                                 value={selectedRowDetails.item}
+                                style={{
+                                  border:
+                                    selectedRowDetails.item === ''
+                                      ? '1px solid red'
+                                      : '1px solid black',
+                                }}
                                 onChange={(event) => {
                                   setSelectedRowDetails({
                                     ...selectedRowDetails,
@@ -466,6 +505,12 @@ const Project = (props) => {
                             {isEdit && t._id === selectedRow ? (
                               <input
                                 type="text"
+                                style={{
+                                  border:
+                                    selectedRowDetails.nextAction === ''
+                                      ? '1px solid red'
+                                      : '1px solid black',
+                                }}
                                 value={selectedRowDetails.nextAction}
                                 onChange={(event) => {
                                   setSelectedRowDetails({
@@ -490,6 +535,12 @@ const Project = (props) => {
                               <input
                                 type="number"
                                 value={selectedRowDetails.priority}
+                                style={{
+                                  border:
+                                    selectedRowDetails.priority === ''
+                                      ? '1px solid red'
+                                      : '1px solid black',
+                                }}
                                 onChange={(event) => {
                                   setSelectedRowDetails({
                                     ...selectedRowDetails,

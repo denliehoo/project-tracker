@@ -5,10 +5,13 @@ const NextActionHistoryModal = (props) => {
   const { nextActionHistoryItem, nextActionHistory } = props
 
   return (
-    <CustomModal open={props.open} onClose={props.onClose}>
+    <CustomModal
+      open={props.open}
+      onClose={props.onClose}
+      hideButton={true}
+      title={`Next action history for ${nextActionHistoryItem}`}
+    >
       <div>
-        <div>Next action history for {nextActionHistoryItem}</div>
-
         {nextActionHistory.length > 0 ? (
           <div>
             <table>

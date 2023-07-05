@@ -21,7 +21,7 @@ const CustomModal = (props) => {
           {props.title}
         </Typography>
         {props.isLoading ? <div>Loading....</div> : props.children}
-        {!props.isLoading && (
+        {!props.isLoading && !props.hideButton && (
           <Button
             fullWidth
             variant="contained"
