@@ -1,30 +1,31 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const userDetailsSlice = createSlice({
-  name: 'userDetails',
+  name: "userDetails",
   initialState: {
     // can put this in layout also by calling the user API; create a getUserByEmail API and allow access to only the user itself
-    email: '',
+    email: "",
     isPremium: false,
     // get these from layout calling the API
     owner: [],
     editor: [],
-    plan: 'none',
+    plan: "none",
     endDate: null,
-    stripeId: '',
-    stripeCheckoutSession: '',
-    name: '',
+    reucrCryptId: "",
+    stripeId: "",
+    stripeCheckoutSession: "",
+    name: "",
   },
   reducers: {
     addUserDetails(state, action) {
-      return { ...action.payload }
+      return { ...action.payload };
     },
     // todoToggled(state, action) {
     //   const todo = state.find((todo) => todo.id === action.payload)
     //   todo.completed = !todo.completed
     // },
   },
-})
+});
 
-export const { addUserDetails } = userDetailsSlice.actions
-export default userDetailsSlice.reducer
+export const { addUserDetails } = userDetailsSlice.actions;
+export default userDetailsSlice.reducer;

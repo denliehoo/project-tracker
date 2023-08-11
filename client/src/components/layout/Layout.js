@@ -1,55 +1,57 @@
 // import classes from "./Layout.module.css";
 
-import { useEffect, useState } from 'react'
-import Navbar from './Navbar'
-import Sidebar from './Sidebar'
-import { useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { addUserDetails } from '../../slices/userDetailsSlice'
-import { apiCallAuth } from '../../api/apiRequest'
+import { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUserDetails } from "../../slices/userDetailsSlice";
+import { apiCallAuth } from "../../api/apiRequest";
 
 const layoutStyle = {
-  display: 'flex',
-  flexDirection: 'column', // horizontal layout
-  height: '100vh', // occupy the full viewport height
-}
+  display: "flex",
+  flexDirection: "column", // horizontal layout
+  height: "100vh", // occupy the full viewport height
+};
 
 const mainContainerStyle = {
-  display: 'flex',
-  flex: '1', // occupy remaining vertical space
-}
+  display: "flex",
+  flex: "1", // occupy remaining vertical space
+};
 
 const mainStyle = {
-  flex: '1', // occupy remaining space
-  padding: '20px', // adjust the padding as per your needs
-}
+  flex: "1", // occupy remaining space
+  padding: "20px", // adjust the padding as per your needs
+};
 
 const Layout = (props) => {
-  const { pathname } = useLocation()
-  const [isLoading, setIsLoading] = useState(true)
-  const [ownProjects, setOwnProjects] = useState([])
-  const [sharedProject, setSharedProjects] = useState([])
-  const [callApi, setCallApi] = useState(true)
-  const [userDetails, setUserDetails] = useState({})
-  const dispatch = useDispatch()
+  const { pathname } = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
+  const [ownProjects, setOwnProjects] = useState([]);
+  const [sharedProject, setSharedProjects] = useState([]);
+  const [callApi, setCallApi] = useState(true);
+  const [userDetails, setUserDetails] = useState({});
+  const dispatch = useDispatch();
 
   const getProjects = async () => {
     try {
-      setIsLoading(true)
-      const projectRes = await apiCallAuth('get', `/projects`)
+      setIsLoading(true);
+      const projectRes = await apiCallAuth("get", `/projects`);
 
-      const userRes = await apiCallAuth('post', '/users/getUserByEmail', {
+      const userRes = await apiCallAuth("post", "/users/getUserByEmail", {
         email: projectRes.data.email,
-      })
+      });
+
       // need call the getuserbyemail and put in plan... checkoutsess
-      const { owner, editor, email, isPremium } = projectRes.data
+      const { owner, editor, email, isPremium } = projectRes.data;
       const {
         plan,
         endDate,
+        recurCryptId,
         stripeId,
         stripeCheckoutSession,
         name,
-      } = userRes.data
+      } = userRes.data;
       const details = {
         email: email,
         owner: owner,
@@ -57,36 +59,37 @@ const Layout = (props) => {
         isPremium: isPremium,
         plan: plan,
         endDate: endDate,
+        recurCryptId: recurCryptId,
         stripeId: stripeId,
         stripeCheckoutSession: stripeCheckoutSession,
         name: name,
-      }
-      setOwnProjects(owner)
-      setSharedProjects(editor)
-      dispatch(addUserDetails(details))
-      setUserDetails(details)
-      setIsLoading(false)
-      setCallApi(false)
+      };
+      setOwnProjects(owner);
+      setSharedProjects(editor);
+      dispatch(addUserDetails(details));
+      setUserDetails(details);
+      setIsLoading(false);
+      setCallApi(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
   useEffect(() => {
-    if (pathname !== '/login' && callApi) {
-      getProjects()
+    if (pathname !== "/login" && callApi) {
+      getProjects();
     } else {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [pathname, callApi])
+  }, [pathname, callApi]);
   return (
     <div>
       {isLoading ? (
         <div>Loading.....</div>
       ) : (
         <div style={layoutStyle}>
-          {pathname !== '/login' && <Navbar />}
+          {pathname !== "/login" && <Navbar />}
           <div style={mainContainerStyle}>
-            {pathname !== '/login' && (
+            {pathname !== "/login" && (
               <Sidebar
                 sharedProject={sharedProject}
                 ownProjects={ownProjects}
@@ -99,7 +102,7 @@ const Layout = (props) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

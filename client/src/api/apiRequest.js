@@ -11,7 +11,6 @@ class ApiCallError extends Error {
 const apiCallAuth = async (method, subUrl, data = null) => {
   const apiUrl = process.env.REACT_APP_API_URL
   const token = localStorage.getItem('JWT')
-  console.log(token)
   try {
     if (!token) throw new ApiCallError('JWT Token does not exist', 401)
 
