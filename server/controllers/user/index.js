@@ -60,29 +60,30 @@ const createUser = async (req, res) => {
   const recurCryptVendorId = process.env.RECURCRYPT_VENDOR_ID;
   const recurCryptApiKeys = process.env.RECURCRYPT_SECRET_KEY;
 
-  const headers = {
-    Authorization: recurCryptApiKeys,
-  };
-
-  const recurCryptClient = await axios.post(
-    `${recurCryptApiUrl}/vendorClients/create/${recurCryptVendorId}`,
-    null,
-    {
-      headers,
-    }
-  );
-  if (!recurCryptClient)
-    return res.status(401).json({ error: "Error in recurcrypt services" });
-
-  const vendorClientId = await recurCryptClient.data._id;
-
   try {
+    const headers = {
+      Authorization: recurCryptApiKeys,
+    };
+
+    const recurCryptClient = await axios.post(
+      `${recurCryptApiUrl}/vendorClients/create/${recurCryptVendorId}`,
+      null,
+      {
+        headers,
+      }
+    );
+
+    if (!recurCryptClient)
+      return res.status(401).json({ error: "Error in recurcrypt services" });
+
+    const vendorClientId = await recurCryptClient.data._id;
+
     user = await User.create({
       name: name,
       email: email,
       password: hashedPassword,
       stripeId: stripeCustomer.id,
-      reucrCryptId: vendorClientId,
+      recurCryptId: vendorClientId,
     });
   } catch (error) {
     return res.status(400).json({ error: error.toString() });

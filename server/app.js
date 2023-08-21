@@ -90,8 +90,10 @@ const seedDataBase = async () => {
     name: "Test Test",
     email: "test@test.com",
     password: testPassword,
-    recurCryptId: "64d606e494d40c320ba2d6d7",
+    recurCryptId: "64d606e494d40c320ba2d6d7", // need change as and when
   });
+
+  // NOTE: FOR TESTING, ENSURE TO CHANGE RECURCRYPTID AND ALSO VENDORID (IN .ENV) AS AND WHEN NEEDED E.G. IF RE-SEED DB
 
   const aliceTask = new models.Task({
     item: "Alice Item",
